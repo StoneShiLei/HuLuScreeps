@@ -1,6 +1,6 @@
 import { ErrorMapper } from "modules/ErrorMapper";
 import mountWork from './mount'
-// import creepNumberListener from './modules/creepController'
+import creepNumberListener from './modules/creepController'
 import { doing } from './utils'
 
 
@@ -10,7 +10,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
   mountWork()
 
   // creep 数量控制
-  // creepNumberListener()
+  creepNumberListener()
 
   // 所有建筑、creep、powerCreep 执行工作
   doing(Game.structures, Game.creeps)
