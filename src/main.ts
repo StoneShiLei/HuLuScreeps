@@ -1,14 +1,18 @@
-import { ErrorMapper } from "utils/ErrorMapper";
+import { ErrorMapper } from "modules/ErrorMapper";
+import mountWork from './mount'
+// import creepNumberListener from './modules/creepController'
+import { doing } from './utils'
 
-// When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
-// This utility uses source maps to get the line numbers and file names of the original, TS source code
+
 export const loop = ErrorMapper.wrapLoop(() => {
-  console.log(`Current game tick is ${Game.time}`);
 
-  // Automatically delete memory of missing creeps
-  for (const name in Memory.creeps) {
-    if (!(name in Game.creeps)) {
-      delete Memory.creeps[name];
-    }
-  }
+  // 挂载拓展
+  mountWork()
+
+  // creep 数量控制
+  // creepNumberListener()
+
+  // 所有建筑、creep、powerCreep 执行工作
+  doing(Game.structures, Game.creeps)
+
 });
