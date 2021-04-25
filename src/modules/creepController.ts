@@ -33,7 +33,7 @@ export default function creepNumberListener(intrval: number = 5): void {
         }
 
         // 加入生成，加入成功的话删除过期内存
-        if (spawnRoom.addSpawnTask(name) != ERR_NAME_EXISTS) delete Memory.creeps[name]
+        // if (spawnRoom.addSpawnTask(name) != ERR_NAME_EXISTS) delete Memory.creeps[name]
     }
 
 }
@@ -68,7 +68,7 @@ export default function creepNumberListener(intrval: number = 5): void {
         const room = Game.rooms[spawnRoom]
         if (!room) return ERR_NOT_OWNER
         // 推送孵化任务
-        room.addSpawnTask(creepName)
+        // room.addSpawnTask(creepName)
         return OK
     },
 

@@ -81,10 +81,10 @@ import roles from 'role'
     private getBodys(bodyType: BodyAutoConfigConstant): BodyPartConstant[] {
         const bodyConfig: BodyConfig = bodyConfigs[bodyType]
 
-        const targetLevel = Object.keys(bodyConfig).reverse().find(level => {
+        const targetLevel = Object.keys(bodyConfig).reverse().find((level:unknown) => {
             // 先通过等级粗略判断，再加上 dryRun 精确验证
             const availableEnergyCheck = (Number(level) <= this.room.energyAvailable)
-            const dryCheck = (this.spawnCreep(bodyConfig[level], 'bodyTester', { dryRun: true }) == OK)
+            const dryCheck = (this.spawnCreep(bodyConfig[level as keyof BodyConfig], 'bodyTester', { dryRun: true }) == OK)
 
             return availableEnergyCheck && dryCheck
         })

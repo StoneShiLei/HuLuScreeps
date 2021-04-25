@@ -138,14 +138,7 @@ interface ICreepConfig {
  type BodyAutoConfigConstant =
  'harvester' |
  'worker' |
- 'upgrader' |
- 'manager' |
- 'processor' |
- 'reserver' |
- 'attacker' |
- 'healer' |
- 'dismantler' |
- 'remoteHarvester'
+ 'upgrader'
 
  /**
  * bodySet
