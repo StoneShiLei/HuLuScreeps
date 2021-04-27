@@ -34,16 +34,47 @@
 }
 
 /**
- * 根据身体配置生成完成的身体数组
- * cpu 消耗: 0.028 左右
- *
- * @param bodySet 身体部件配置对象
+ * 在绘制控制台信息时使用的颜色
  */
- export function calcBodyPart(bodySet: BodySet): BodyPartConstant[] {
-    // 把身体配置项拓展成如下形式的二维数组
-    // [ [ TOUGH ], [ WORK, WORK ], [ MOVE, MOVE, MOVE ] ]
-    const bodys = Object.keys(bodySet).map<BodyPartConstant[]>(type => Array(bodySet[type as BodyPartConstant]).fill(type))
-    // 把二维数组展平
-    let result:BodyPartConstant[] = []
-    return result.concat.apply([], bodys);
+ const colors: { [name in Colors]: string } = {
+    red: '#ef9a9a',
+    green: '#6b9955',
+    yellow: '#c5c599',
+    blue: '#8dc5e3'
+}
+
+/**
+ * 给指定文本添加颜色
+ *
+ * @param content 要添加颜色的文本
+ * @param colorName 要添加的颜色常量字符串
+ * @param bolder 是否加粗
+ */
+export function colorful(content: string, colorName: Colors = null, bolder: boolean = false): string {
+    const colorStyle = colorName ? `color: ${colors[colorName]};` : ''
+    const bolderStyle = bolder ? 'font-weight: bolder;' : ''
+
+    return `<text style="${[ colorStyle, bolderStyle ].join(' ')}">${content}</text>`
+}
+
+/**
+ * 全局日志
+ *
+ * @param content 日志内容
+ * @param prefixes 前缀中包含的内容
+ * @param color 日志前缀颜色
+ * @param notify 是否发送邮件
+ */
+ export function log(content: string, prefixes: string[] = [], color: Colors = null, notify: boolean = false): OK {
+    // 有前缀就组装在一起
+    let prefix = prefixes.length > 0 ? `【${prefixes.join(' ')}】 ` : ''
+    // 指定了颜色
+    prefix = colorful(prefix, color, true)
+
+    const logContent = `${prefix}${content}`
+    console.log(logContent)
+    // 转发到邮箱
+    if (notify) Game.notify(logContent)
+
+    return OK
 }

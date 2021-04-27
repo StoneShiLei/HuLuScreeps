@@ -6,23 +6,14 @@ import mountCreep from './creep'
 // import mountStructure from './structures'
 
 export default function():void {
-    // if(!global.hasExtension){
+    if(!global.hasExtension){
         console.log('[mount] 重新挂载拓展')
 
         //初始化存储
         initStorage()
 
-        // 挂载全部拓展
-        // mountGlobal()
-        // mountRoom()
-        // mountRoomPostion()
-        mountCreep()
-        // mountStructure()
-
-        // global.hasExtension = true
-
-        workAfterMount()
-    // }
+        global.hasExtension = true
+    }
 }
 
 /**
