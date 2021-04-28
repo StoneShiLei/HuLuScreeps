@@ -10,6 +10,7 @@ declare namespace NodeJS{
 interface CreepMemory {
     //角色data 是全部角色特有字段的集合
     data:CreepData
+    role:string
 }
 
   interface CreepData{
