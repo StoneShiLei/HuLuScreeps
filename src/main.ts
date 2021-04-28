@@ -8,9 +8,9 @@
  */
 import { config } from "chai";
 import { forOwn } from "lodash";
-import { ErrorMapper } from "modules/ErrorMapper";
+import { ErrorMapper } from "utils/ErrorMapper";
 import { type } from "os";
-import mountWork from './mount'
+import mountWork from './moudle'
 import { doing } from './utils'
 
 export const loop = ErrorMapper.wrapLoop(() => {
