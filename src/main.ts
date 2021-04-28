@@ -10,7 +10,6 @@ import { config } from "chai";
 import { forOwn } from "lodash";
 import { ErrorMapper } from "modules/ErrorMapper";
 import { type } from "os";
-import creepWork from "role";
 import mountWork from './mount'
 import { doing } from './utils'
 
@@ -27,17 +26,19 @@ export const loop = ErrorMapper.wrapLoop(() => {
   doing(Game.structures, Game.creeps)
 
   class CreepWorkData {}
-  class HarvesterWorkData implements CreepWorkData{
-      sourceId: string
+  class HarvesterWorkData extends CreepWorkData{
+      resourceId: string
       targetId: string
-      constructor(sourceId:string,targetId:string){
-        this.sourceId = sourceId;
+      constructor(resourceId:string,targetId:string){
+        super()
+        this.resourceId = resourceId;
         this.targetId = targetId;
       }
   }
-  class WorkerData implements CreepWorkData{
+  class WorkerData extends CreepWorkData{
     resourceId: string
     constructor(resourceId:string){
+      super()
       this.resourceId = resourceId;
     }
   }
@@ -57,15 +58,20 @@ export const loop = ErrorMapper.wrapLoop(() => {
   }
 
   class HarvesterLogic implements BaseWorkingLogic{
-    creepWorkData: CreepWorkData;
+    creepWorkData: HarvesterWorkData;
     isKeepalive: (room: Room, creepName: string, pastLifeMemory: CreepMemory) => boolean;
     getReady: (creep: Creep) => boolean;
-    getResource(creep: Creep){ return true };
+    getResource(creep: Creep){
+      let data:HarvesterWorkData = creep.memory.data
+      data.resourceId
+      data.targetId
+      return true
+    };
     workingWithTarget: (creep: Creep) => boolean;
   }
 
   class UpgraderLogic implements BaseWorkingLogic{
-    creepWorkData: CreepWorkData;
+    creepWorkData: WorkerData;
 
     isKeepalive: (room: Room, creepName: string, pastLifeMemory: CreepMemory) => boolean;
     getReady: (creep: Creep) => boolean;
@@ -73,31 +79,32 @@ export const loop = ErrorMapper.wrapLoop(() => {
     workingWithTarget: (creep: Creep) => boolean;
   }
   class BuilderLogic implements BaseWorkingLogic{
-    creepWorkData: CreepWorkData;
+    creepWorkData: WorkerData;
 
     isKeepalive: (room: Room, creepName: string, pastLifeMemory: CreepMemory) => boolean;
     getReady: (creep: Creep) => boolean;
     getResource: (creep: Creep) => boolean;
     workingWithTarget: (creep: Creep) => boolean;
   }
-  class RoleLogicFactory {
-    private workingLogic:BaseWorkingLogic
-    constructor(workingLogic:BaseWorkingLogic){
-      this.workingLogic = workingLogic
-    }
-    getWorkLogic(creepWorkData:CreepWorkData){
-      this.workingLogic.creepWorkData = creepWorkData
-      return this.workingLogic;
-    }
+  // class RoleLogicFactory {
+  //   private workingLogic:BaseWorkingLogic
+  //   constructor(workingLogic:BaseWorkingLogic){
+  //     this.workingLogic = workingLogic
+  //   }
+  //   getWorkLogic(creepWorkData:CreepWorkData){
+  //     this.workingLogic.creepWorkData = creepWorkData
+  //     return this.workingLogic;
+  //   }
+  // }
+
+
+  let roleFactory:{[key in Role]:BaseWorkingLogic} = {
+    harvester: new HarvesterLogic(),
+    upgrader: new UpgraderLogic(),
+    builder: new BuilderLogic(),
   }
 
-
-  let roleFactory:{[key in Role]:RoleLogicFactory} = {
-    harvester: new RoleLogicFactory(new HarvesterLogic()),
-    upgrader: new RoleLogicFactory(new UpgraderLogic()),
-    builder: new RoleLogicFactory(new BuilderLogic()),
-  }
-
-  let harvesterLogic = roleFactory[Role.Harvester].getWorkLogic(new HarvesterWorkData("some sourceID","some targetID"));
+  let harvesterLogic = roleFactory[Role.Harvester]
   harvesterLogic.getResource(Game.creeps[0])
+
 });
