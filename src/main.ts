@@ -50,7 +50,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
   }
 
   abstract class BaseWorkingLogic {
-    abstract creepWorkData:CreepWorkData
     abstract isKeepalive:(room:Room,creepName:string,pastLifeMemory:CreepMemory) => boolean
     abstract getReady:(creep:Creep) => boolean
     abstract getResource:(creep:Creep) => boolean
@@ -58,7 +57,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
   }
 
   class HarvesterLogic implements BaseWorkingLogic{
-    creepWorkData: HarvesterWorkData;
     isKeepalive: (room: Room, creepName: string, pastLifeMemory: CreepMemory) => boolean;
     getReady: (creep: Creep) => boolean;
     getResource(creep: Creep){
@@ -71,32 +69,17 @@ export const loop = ErrorMapper.wrapLoop(() => {
   }
 
   class UpgraderLogic implements BaseWorkingLogic{
-    creepWorkData: WorkerData;
-
     isKeepalive: (room: Room, creepName: string, pastLifeMemory: CreepMemory) => boolean;
     getReady: (creep: Creep) => boolean;
     getResource: (creep: Creep) => boolean;
     workingWithTarget: (creep: Creep) => boolean;
   }
   class BuilderLogic implements BaseWorkingLogic{
-    creepWorkData: WorkerData;
-
     isKeepalive: (room: Room, creepName: string, pastLifeMemory: CreepMemory) => boolean;
     getReady: (creep: Creep) => boolean;
     getResource: (creep: Creep) => boolean;
     workingWithTarget: (creep: Creep) => boolean;
   }
-  // class RoleLogicFactory {
-  //   private workingLogic:BaseWorkingLogic
-  //   constructor(workingLogic:BaseWorkingLogic){
-  //     this.workingLogic = workingLogic
-  //   }
-  //   getWorkLogic(creepWorkData:CreepWorkData){
-  //     this.workingLogic.creepWorkData = creepWorkData
-  //     return this.workingLogic;
-  //   }
-  // }
-
 
   let roleFactory:{[key in Role]:BaseWorkingLogic} = {
     harvester: new HarvesterLogic(),
