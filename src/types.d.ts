@@ -6,3 +6,16 @@ declare namespace NodeJS{
         hasExtension:boolean
     }
 }
+
+interface CreepMemory {
+    //角色data 是全部角色特有字段的集合
+    data:CreepData
+}
+
+  interface CreepData{
+    resourceId:string
+    targetId:string
+    x:string
+    y:string
+    someField:string
+  }
