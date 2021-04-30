@@ -2,14 +2,14 @@
 /**
  * 在绘制控制台信息时使用的颜色
  */
- enum ColorEnum{
+ export enum ColorEnum{
     red ='#ef9a9a',
     green = '#6b9955',
     yellow = '#c5c599',
     blue = '#8dc5e3'
 }
 
-class Utils{
+export class Utils{
 
     /**
      * 把 obj2 的原型合并到 obj1 的原型上
@@ -38,7 +38,7 @@ class Utils{
      * @param colorName 要添加的颜色常量字符串
      * @param bolder 是否加粗
      */
-    static colorful(content: string, colorName: ColorEnum = null, bolder: boolean = false): string {
+    static colorful(content: string, bolder: boolean = false,colorName?:ColorEnum ): string {
         const colorStyle = colorName ? `color: ${colorName};` : ''
         const bolderStyle = bolder ? 'font-weight: bolder;' : ''
 
@@ -53,11 +53,11 @@ class Utils{
      * @param color 日志前缀颜色
      * @param notify 是否发送邮件
      */
-    static log(content: string, prefixes: string[] = [], color: ColorEnum = null, notify: boolean = false): OK {
+    static log(content: string, prefixes: string[] = [], notify: boolean = false, color?: ColorEnum): OK {
         // 有前缀就组装在一起
         let prefix = prefixes.length > 0 ? `【${prefixes.join(' ')}】 ` : ''
         // 指定了颜色
-        prefix = this.colorful(prefix, color, true)
+        prefix = this.colorful(prefix, true,color)
 
         const logContent = `${prefix}${content}`
         console.log(logContent)

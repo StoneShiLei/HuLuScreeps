@@ -1,33 +1,22 @@
-import { CreepWorkData, HarvesterWorkData, ProcessorData, TransporterData, WorkerData } from "./CreepWorkData"
 
+/**
+ * 角色状态阶段
+ *
+ * 是否持续生成
+ * 是否准备完毕
+ * 获取资源阶段
+ * 工作阶段
+ * 角色身体部件
+ */
 export abstract class BaseWorkCirculate {
     abstract isKeepalive(room:Room,creepName:string,pastLifeMemory:CreepMemory): boolean
     abstract getReady(creep:Creep): boolean
     abstract getResource(creep:Creep):boolean
     abstract workingWithTarget(creep:Creep): boolean
-    abstract bodys:(room:Room,spawn:StructureSpawn,data:{[key in RoleEnum]:CreepWorkData}[RoleEnum]) => BodyPartConstant[]
+    abstract bodys:(room:Room,spawn:StructureSpawn,data:{[key in Role]:CreepData}[Role]) => BodyPartConstant[]
 
     // GetBodyParts(room:Room,spawn:StructureSpawn,data:CreepWorkDataDic[RoleEnum]):BodyPartConstant[]{
 
     // }
 
 }
-
-export enum RoleEnum{
-    Harvester = "harvester",
-    Worker = "worker",
-    Transporter = "transporter",
-    Processor = "processor"
-}
-
-
-export class RoleDatas{
-    creepWorkData:Map<RoleEnum,CreepWorkData>
-    //构造角色和workData的映射关系
-    constructor(creepWorkData:Map<RoleEnum,CreepWorkData>){
-        if(!this.creepWorkData){
-            this.creepWorkData = creepWorkData
-        }
-    }
-}
-
