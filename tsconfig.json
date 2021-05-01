@@ -13,10 +13,16 @@
     "experimentalDecorators": true,
     "noImplicitReturns": true,
     "allowSyntheticDefaultImports": true,
-    "allowUnreachableCode": false,
-    "strictNullChecks": false
+    "allowUnreachableCode": false
   },
   "exclude": [
     "node_modules"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/*.d.ts",
+    "types/**/*.d.ts",
+    "screeps.d.ts",
+    "test/**/*.ts"
   ]
 }

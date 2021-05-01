@@ -1,18 +1,24 @@
-// class HarvesterLogic extends BaseWorkingLogic{
-//     isKeepalive(room: Room, creepName: string, pastLifeMemory: CreepMemory): boolean {
-//       throw new Error("Method not implemented.");
-//     }
-//     getReady(creep: Creep): boolean {
-//       throw new Error("Method not implemented.");
-//     }
-//     getResource(creep: Creep):boolean{
-//       let data:HarvesterWorkData = creep.memory.data
-//       data.resourceId
-//       data.targetId
-//       return true
-//     };
-//     workingWithTarget(creep: Creep): boolean {
-//       throw new Error("Method not implemented.");
-//     }
+import { BaseRole } from "role/baseRole";
+import { harvesterController } from "roomTasks";
 
-//   }
+
+
+export class Harvester extends BaseRole {
+    // bodyPart: BodyPartConstant[];
+
+    // constructor(bodyPart:BodyPartConstant[]) {
+    //     super()
+    //     this.bodyPart = bodyPart
+    // }
+
+    keepAlive?(room: Room): boolean
+    getReady?(creep: Creep): boolean
+
+    getResource?(creep: Creep): boolean {
+        return harvesterController.getWork(creep).resourceLogic()
+    }
+    workWithTarget(creep: Creep): boolean {
+        return harvesterController.getWork(creep).workLogic()
+    }
+
+}

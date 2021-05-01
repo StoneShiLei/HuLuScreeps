@@ -5,18 +5,3 @@ declare module NodeJS {
         _: _.LoDashStatic
     }
 }
-
-/**
- * 包含 store 属性的建筑
- */
- type StructureWithStore =
- StructureTower |
- StructureStorage |
- StructureContainer |
- StructureExtension |
- StructureFactory |
- StructureSpawn |
- StructurePowerSpawn |
- StructureLink |
- StructureTerminal |
- StructureNuker
