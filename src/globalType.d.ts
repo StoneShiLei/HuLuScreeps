@@ -6,22 +6,30 @@ declare module NodeJS {
     }
 }
 
+/**
+ * 包含 store 属性的建筑
+ */
+type StructureWithStore =
+    StructureTower |
+    StructureStorage |
+    StructureContainer |
+    StructureExtension |
+    StructureFactory |
+    StructureSpawn |
+    StructurePowerSpawn |
+    StructureLink |
+    StructureTerminal |
+    StructureNuker
 
 /**
- * 当前允许获取能量的目标
- * 建筑或地上的能量
+ * 包含任意键值对的对象
  */
- type EnergyTarget = EnergySourceStructure | Resource<RESOURCE_ENERGY>
+ type AnyObject = { [key: string]: any }
 
-
-/**
- * 所有能量来源
- *
- * creep 将会从这些地方获取能量
- */
- type AllEnergySource = Source | Resource<RESOURCE_ENERGY> | EnergySourceStructure
 
  /**
-  * creep 能从中获取能量的建筑
-  */
- type EnergySourceStructure = StructureLink | StructureContainer | StructureTerminal | StructureStorage
+ * 本项目中出现的颜色常量
+ */
+type Colors = 'green' | 'blue' | 'yellow' | 'red'
+
+
