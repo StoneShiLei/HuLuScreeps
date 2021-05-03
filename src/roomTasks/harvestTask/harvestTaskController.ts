@@ -5,6 +5,7 @@ import { HarvestTaskStartLogic } from "./harvestTaskLogic";
 
 
 export default class HarvestTaskController extends BaseTaskController{
+
     constructor(roomName:string) {
         super(roomName,"harvester")
     }
@@ -12,4 +13,5 @@ export default class HarvestTaskController extends BaseTaskController{
     public getWork(creep:Creep): BaseTaskLogic{
         return new HarvestTaskStartLogic(creep,new HarvestTask(),this)
     }
+
 }

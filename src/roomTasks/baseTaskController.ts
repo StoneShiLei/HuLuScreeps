@@ -1,6 +1,7 @@
 import { BaseTask } from "./baseTask"
+import { BaseTaskLogic } from "./baseTaskLogic"
 
-export class BaseTaskController {
+export abstract class BaseTaskController {
 
 
     protected readonly TASK_SAVE_KEY:string
@@ -17,6 +18,8 @@ export class BaseTaskController {
         this.CREEP_SAVE_KEY = `${memoryKey}Creeps`
         this.init()
     }
+
+    abstract getWork(creep:Creep): BaseTaskLogic
 
     private init(){
         const roomMemory = Memory.rooms?.[this.roomName]

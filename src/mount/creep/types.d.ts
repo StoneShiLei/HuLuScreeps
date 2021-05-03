@@ -1,7 +1,10 @@
 
 
 interface CreepMemory{
-	upgrading:boolean
+	sourceID?:string
+	containerID?:string
+	upgrading?:boolean
+	getReady:boolean
 	role:Role
 	working:boolean
 }
@@ -9,4 +12,5 @@ interface CreepMemory{
 
 interface Creep{
 	work():void
+	getEnergyFrom(target:AllEnergySource):ScreepsReturnCode
 }
