@@ -1,4 +1,4 @@
-export class Utils{
+export default class Utils{
 
     static createGetter(target: AnyObject, name: string, getter: () => any) {
         Object.defineProperty(target.prototype, name, {

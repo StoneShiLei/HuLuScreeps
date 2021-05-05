@@ -1,9 +1,11 @@
-import room from './room/index'
-
+import Utils from "utils/utils"
+import CreepExtension from "./creep/extension"
+import RoomPositionExtension from "./roomPosition/extension"
 
 export const  moudules = () => {
     if (!Memory.rooms) Memory.rooms = {}
     else delete Memory.rooms.undefined
 
-    room()
+    Utils.assignPrototype(Creep,CreepExtension)
+    Utils.assignPrototype(RoomPosition,RoomPositionExtension)
 }

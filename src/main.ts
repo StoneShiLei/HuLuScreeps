@@ -17,7 +17,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
 
 	if (harvesters.length < 10) {
-		spawn.spawnCreep(BodyAutoConfigUtil.createBodyGetter(BodyAutoConfigUtil.bodyAutoConfigs.harvester)(room,spawn), "test" + Game.time,{memory:{role:"harvester",working:false,sourceID:"ef990774d80108c",containerID:"3d34bb95aa3bf7f",getReady:false}});
+		// spawn.spawnCreep(BodyAutoConfigUtil.createBodyGetter(BodyAutoConfigUtil.bodyAutoConfigs.harvester)(room,spawn), "test" + Game.time,{memory:{role:"harvester",working:false,sourceID:"ef990774d80108c",containerID:"3d34bb95aa3bf7f",getReady:false}});
     }
 
 
