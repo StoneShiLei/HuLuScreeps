@@ -1,5 +1,11 @@
 export default class Utils{
 
+    /**
+     * 给目标类型添加getter
+     * @param target
+     * @param name
+     * @param getter
+     */
     static createGetter(target: AnyObject, name: string, getter: () => any) {
         Object.defineProperty(target.prototype, name, {
             get: getter,

@@ -7,21 +7,6 @@ declare module NodeJS {
 }
 
 /**
- * 包含 store 属性的建筑
- */
-type StructureWithStore =
-    StructureTower |
-    StructureStorage |
-    StructureContainer |
-    StructureExtension |
-    StructureFactory |
-    StructureSpawn |
-    StructurePowerSpawn |
-    StructureLink |
-    StructureTerminal |
-    StructureNuker
-
-/**
  * 包含任意键值对的对象
  */
  type AnyObject = { [key: string]: any }
