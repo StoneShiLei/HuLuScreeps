@@ -1,5 +1,11 @@
-import BaseTask from "moudules/taskController/task/baseTask";
+import mountCreep from "moudules/creep";
+import mountRoom from "moudules/room";
+import mountRoomPosition from "moudules/roomPosition";
 import { ErrorMapper } from "utils/errorMapper";
+
+mountCreep()
+mountRoom()
+mountRoomPosition()
 
 export const loop = ErrorMapper.wrapLoop(() => {
 

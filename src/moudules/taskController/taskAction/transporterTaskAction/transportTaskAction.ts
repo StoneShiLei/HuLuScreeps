@@ -1,4 +1,4 @@
-import BaseTaskController from "moudules/taskController/baseTaskController";
+import BaseTaskController from "moudules/taskController/controller/baseTaskController";
 import BaseTask from "moudules/taskController/task/baseTask";
 import BaseTaskAction from "../baseTaskAction";
 

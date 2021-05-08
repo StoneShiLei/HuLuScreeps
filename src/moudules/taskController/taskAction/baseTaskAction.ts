@@ -1,4 +1,4 @@
-import BaseTaskController from "../baseTaskController";
+import BaseTaskController from "../controller/baseTaskController";
 import BaseTask from "../task/baseTask";
 
 /**
@@ -41,7 +41,7 @@ export class NoTaskAction extends BaseTaskAction{
     // constructor(creep:Creep){
     //     super(creep)
     // }
-    
+
 }
 
 

@@ -1,6 +1,5 @@
-import BaseTask from "./task/baseTask"
-import BaseTaskAction from "./taskAction/baseTaskAction"
-import HarvesterContainerTaskAction from "./taskAction/transporterTaskAction/transportTaskAction"
+import BaseTask from "../task/baseTask"
+import BaseTaskAction from "../taskAction/baseTaskAction"
 
 
 export default abstract class BaseTaskController {
@@ -52,7 +51,10 @@ export default abstract class BaseTaskController {
 
     private save():void{
         if(!Memory.rooms) Memory.rooms = {}
-        if(!Memory.rooms[this.roomName]) Memory.rooms[this.roomName] = {tasks:{},creeps:{}}
+        if(!Memory.rooms[this.roomName]){
+            Memory.rooms[this.roomName].tasks = {}
+            Memory.rooms[this.roomName].creeps = {}
+        }
 
         const roomMemory = Memory.rooms[this.roomName]
         if(this.tasks.length <= 0) delete roomMemory.tasks[this.TASK_SAVE_KEY]

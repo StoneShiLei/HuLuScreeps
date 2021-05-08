@@ -1,0 +1,5 @@
+
+
+interface RoomPosition{
+    getFreeSpace(): RoomPosition[]
+}
