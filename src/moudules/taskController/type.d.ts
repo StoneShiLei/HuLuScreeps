@@ -16,10 +16,10 @@ interface WorkCreep{
 
 
 //全部任务类型
-type AllTaskType = AllHarvesterTaskType
+type AllTaskType = AllTransporterTaskType
 
 //任务分类类型
-type AllHarvesterTaskType = HarvesterContainerTaskType
+type AllTransporterTaskType = TransportTask
 
 //全部任务定义
-type HarvesterContainerTaskType = "harvesterContainerTask"
+type TransportTask = "transportTask"

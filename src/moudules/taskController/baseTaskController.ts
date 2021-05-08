@@ -1,14 +1,9 @@
 import BaseTask from "./task/baseTask"
 import BaseTaskAction from "./taskAction/baseTaskAction"
-import HarvesterContainerTaskAction from "./taskAction/harvesterTaskAction/harvesterContainerTaskAction"
+import HarvesterContainerTaskAction from "./taskAction/transporterTaskAction/transportTaskAction"
 
 
-export default class BaseTaskController {
-
-    //全部任务类型和工作逻辑的集合
-    static TASK_ACTIONS:{[taskType in AllTaskType]:BaseTaskAction } = {
-        harvesterContainerTask:new HarvesterContainerTaskAction()
-    }
+export default abstract class BaseTaskController {
 
     //任务队列的内存key
     TASK_SAVE_KEY:string
@@ -21,6 +16,7 @@ export default class BaseTaskController {
     //在职creep
     creeps:{[creepName:string]:WorkCreep} = {}
 
+    abstract getAction(creep:Creep):BaseTaskAction
 
     constructor(roomName:string,type:string){
         this.roomName = roomName;
@@ -28,6 +24,7 @@ export default class BaseTaskController {
         this.CREEP_SAVE_KEY = `${type}Creeps`;
         this.init()
     }
+
 
     public AddTask(){
 
