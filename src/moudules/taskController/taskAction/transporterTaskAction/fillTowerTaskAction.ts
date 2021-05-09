@@ -1,12 +1,11 @@
 import BaseTransporterTaskAction from "./baseTransporterTaskAction";
 
 /**
- * 从A点将能量搬运至B点
+ * 填充tower
  */
-export default class TransportTaskAction extends BaseTransporterTaskAction {
+export default class FillTowerTaskAction extends BaseTransporterTaskAction {
 
     getResource():boolean{
-        // if(this.creep.store[this.task])
         return true
     }
 

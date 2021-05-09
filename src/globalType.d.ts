@@ -18,3 +18,17 @@ declare module NodeJS {
 type Colors = 'green' | 'blue' | 'yellow' | 'red'
 
 
+/**
+ * 包含 store 属性的建筑
+ */
+ type StructureWithStore =
+ StructureTower |
+ StructureStorage |
+ StructureContainer |
+ StructureExtension |
+ StructureFactory |
+ StructureSpawn |
+ StructurePowerSpawn |
+ StructureLink |
+ StructureTerminal |
+ StructureNuker

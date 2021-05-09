@@ -1,23 +1,38 @@
 import BaseTaskController from "./baseTaskController";
-import BaseTask from "../task/baseTask";
-import TransportTask from "../task/transporterTask/transporterTask";
-import BaseTaskAction, { NoTaskAction } from "../taskAction/baseTaskAction";
 import TransportTaskAction from "../taskAction/transporterTaskAction/transportTaskAction";
+import FillExtensionTaskAction from "../taskAction/transporterTaskAction/fillExtensionTaskAction";
+import FillTowerTaskAction from "../taskAction/transporterTaskAction/fillTowerTaskAction";
+import BaseTransporterTaskAction, { NoTaskAction } from "../taskAction/transporterTaskAction/baseTransporterTaskAction";
+import BaseTransporterTask from "../task/transporterTask/baseTransporterTask";
 
+type AllTransportAction = {[taskType in AllTransporterTaskType]: BaseTransporterTaskAction}
 
-export default class TransportTaskController extends BaseTaskController{
-    transportActions:{[taskType in AllTransporterTaskType]: BaseTaskAction} = {
-        "transportTask":new TransportTaskAction()
-    }
-
-    getAction(creep: Creep): BaseTaskAction {
-        const task:BaseTask = new TransportTask(1,1,"","") //todo
-        if(!task) return new NoTaskAction().init(creep)
-
-        return this.transportActions[task.taskType].init(creep,task,this)
+export default class TransportTaskController extends BaseTaskController<AllTransporterTaskType,BaseTransporterTask>{
+    actions: AllTransportAction = {
+        "transportTask":new TransportTaskAction(),
+        "fillTower":new FillTowerTaskAction(),
+        "fillExtensionTask":new FillExtensionTaskAction(),
+        "NoTask":new NoTaskAction()
     }
 
     constructor(roomName:string){
         super(roomName,"transport")
+    }
+
+    getAction(creep: Creep): BaseTransporterTaskAction {
+
+        const task = this.getUnitTask(creep)
+        if(!task){
+            const noTask =  this.actions["NoTask"]
+            noTask.creep = creep
+            return noTask
+        }
+
+        const action = this.actions[task.taskType]
+        action.creep = creep
+        action.task = task
+        action.controller = this
+
+        return action
     }
 }

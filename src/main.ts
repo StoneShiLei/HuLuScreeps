@@ -1,8 +1,10 @@
+import mountTaskController from "moudules";
 import mountCreep from "moudules/creep";
 import mountRoom from "moudules/room";
 import mountRoomPosition from "moudules/roomPosition";
 import { ErrorMapper } from "utils/errorMapper";
 
+mountTaskController()
 mountCreep()
 mountRoom()
 mountRoomPosition()

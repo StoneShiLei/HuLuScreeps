@@ -1,3 +1,4 @@
+import { creepRoleConfig } from "role"
 
 
 
@@ -5,11 +6,56 @@ export default class CreepExtension extends Creep {
 
 
     public work():void{
+        // 检查 creep 内存中的角色是否存在
+        if(!(this.memory.role in creepRoleConfig)){
+            this.say('我没角色？')
+        }
 
+        if(this.spawning) return
+
+        // 获取对应配置项
+        const roleConfig = creepRoleConfig[this.memory.role]
+
+        // 没准备的时候就执行准备阶段
+        if(!this.memory.ready){
+            if(roleConfig.getReady) this.memory.ready = roleConfig.getReady(this)
+            else this.memory.ready = true
+        }
+
+        //　如果执行了 prepare 还没有 ready，就返回等下个 tick 再执行
+        if(!this.memory.ready) return
+
+        // 获取是否工作，没有 source 的话直接执行 target
+        const working = roleConfig.getResource? this.memory.working : true
+
+        let stateChange = false
+
+        // 执行对应阶段
+        // 阶段执行结果返回 true 就说明需要更换 working 状态
+        if(working){
+            if(roleConfig.workWithTarget && roleConfig.workWithTarget(this)) stateChange = true
+            else {
+                if(roleConfig.getResource && roleConfig.getResource(this)) stateChange = true
+            }
+        }
+
+
+        if(stateChange) this.memory.working = !this.memory.working
     }
 
     public goTo(target:RoomPosition,opt?:MoveToOpts):ScreepsReturnCode{
         return this.moveTo(target,opt)
+    }
+
+    /**
+     * 切换为能量获取状态
+     * 应在 target 阶段能量不足时调用
+     *
+     * @returns true
+     */
+    public backToGetEnergy():boolean{
+        delete this.memory.sourceID
+        return true
     }
 
     /**

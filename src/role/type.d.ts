@@ -10,9 +10,15 @@ interface RoleConfig{
 
 interface CreepMemory{
     //资源id
-    sourceID:Id<Source>
+    sourceID?:Id<Source>
     //工作目标id
     targetID?:Id<Structure>
+    //creep的角色
+    role:AllRoles
+    //是否经过了准备阶段
+    ready:boolean
+    //是否工作状态
+    working:boolean
 }
 
 
