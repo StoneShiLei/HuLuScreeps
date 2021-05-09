@@ -1,26 +1,25 @@
 import EnergyHelper from "moudules/energyHelper/energyHelper";
 import BaseTaskController from "moudules/taskController/controller/baseTaskController";
-import BaseTransporterTask from "moudules/taskController/task/transporterTask/baseTransporterTask";
+import BaseWorkerTask from "moudules/taskController/task/wokerTask/baseWorkerTask";
 /**
  * 任务工作逻辑基类
  */
-export default abstract class BaseTransporterTaskAction<Task extends BaseTransporterTask> implements ITaskAction{
+export default abstract class BaseWorkerTaskAction<Task extends BaseWorkerTask> implements ITaskAction{
 
     abstract getResource(): boolean
     abstract workWithTarget(): boolean
 
     creep!: Creep;
-    controller!: BaseTaskController<AllTransporterTaskType,Task>;
+    controller!: BaseTaskController<AllWorkerTaskType,Task>;
     task!: Task;
 
-    /**
-     * 搬运工去房间内获取能量
-     *
-     * @param creep 要获取能量的 creep
-     * @returns 身上是否已经有足够的能量了
-     */
     protected getEnergy():boolean{
-        if(this.creep.store[RESOURCE_ENERGY] > 40) return true
+        // 因为只会从建筑里拿，所以只要拿到了就去升级
+        // 切换至 target 阶段时会移除缓存，保证下一次获取能量时重新搜索，避免出现一堆人都去挤一个的情况发生
+        if(this.creep.store[RESOURCE_ENERGY] > 10){
+            delete this.creep.memory.sourceId
+            return true
+        }
 
         let resource:AllEnergySource | null = null
         //查找缓存是否存在
@@ -36,24 +35,28 @@ export default abstract class BaseTransporterTaskAction<Task extends BaseTranspo
             this.creep.memory.sourceId = resource.id
         }
 
-        if(!resource || (resource instanceof Structure && resource.store[RESOURCE_ENERGY] <= 0)
-        || (resource instanceof Resource && resource.amount <= 0)){
-            let target = resource? resource : this.creep.room.find(FIND_SOURCES)[0]
-            //先移动到目标附近
-            if(target) this.creep.goTo(target.pos,{range:3})
-            else this.creep.say('😯没能量呀')
-
-            delete this.creep.memory.sourceId
+        //还是获取不到resource
+        if(!resource){
+            this.creep.say('没能量了，歇会')
             return false
         }
 
-        //获取能量
         const result = this.creep.getEngryFrom(resource)
-        return result == OK
+
+        // 之前用的能量来源没能量了就更新来源
+        if(result == OK){
+            delete this.creep.memory.sourceId
+            return true
+        }
+        if(result === ERR_NOT_ENOUGH_RESOURCES){
+            delete this.creep.memory.sourceId
+            return false
+        }
+        return false
     }
 }
 
-export class NoTaskAction extends BaseTransporterTaskAction<BaseTransporterTask>{
+export class NoTaskAction extends BaseWorkerTaskAction<BaseWorkerTask>{
     getResource(): boolean {
         this.creep.say('💤')
         return false

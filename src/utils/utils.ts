@@ -33,7 +33,6 @@ export default class Utils{
         })
     }
 
-
     /**
      * 给指定文本添加颜色
      *

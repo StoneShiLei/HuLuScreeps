@@ -5,7 +5,7 @@ import FillTowerTaskAction from "../taskAction/transporterTaskAction/fillTowerTa
 import BaseTransporterTaskAction, { NoTaskAction } from "../taskAction/transporterTaskAction/baseTransporterTaskAction";
 import BaseTransporterTask from "../task/transporterTask/baseTransporterTask";
 
-type AllTransportAction = {[taskType in AllTransporterTaskType]: BaseTransporterTaskAction}
+type AllTransportAction = {[taskType in AllTransporterTaskType]: BaseTransporterTaskAction<BaseTransporterTask>}
 
 export default class TransportTaskController extends BaseTaskController<AllTransporterTaskType,BaseTransporterTask>{
     actions: AllTransportAction = {
@@ -19,7 +19,7 @@ export default class TransportTaskController extends BaseTaskController<AllTrans
         super(roomName,"transport")
     }
 
-    getAction(creep: Creep): BaseTransporterTaskAction {
+    getAction(creep: Creep): BaseTransporterTaskAction<BaseTransporterTask> {
 
         const task = this.getUnitTask(creep)
         if(!task){

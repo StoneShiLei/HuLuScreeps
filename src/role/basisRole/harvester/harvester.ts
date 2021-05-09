@@ -1,12 +1,17 @@
 import BodyAutoConfigUtil from "moudules/bodyConfig/bodyConfig";
 import TransportTask from "moudules/taskController/task/transporterTask/transporterTask";
+import BuildContainerTask from "moudules/taskController/task/wokerTask/buildContainerTask";
+import RepairTask from "moudules/taskController/task/wokerTask/repairTask";
 
-
+/**
+ * 采集者
+ * 从指定 source 中获取能量 > 将能量存放到身下的 container 中
+ */
 export default class HarvesterConfig implements RoleConfig{
 
     getReady?(creep:Creep):boolean{
-        const harvestRoom = creep.memory.harvestRoom
-        const sourceID = creep.memory.sourceID
+        const harvestRoom = creep.memory.harvesterData.harvestRoom
+        const sourceID = creep.memory.harvesterData.sourceID
         if(!sourceID) return false
         if(creep.room.name !== harvestRoom){
             creep.goTo(new RoomPosition(25,25,harvestRoom))
@@ -15,19 +20,19 @@ export default class HarvesterConfig implements RoleConfig{
 
         const source = Game.getObjectById<Source>(sourceID)
         if(!source) throw new Error("harvester的source不存在")
-        if(!creep.memory.harvestMode) this.setHarvestMode(creep,source)
+        if(!creep.memory.harvesterData.harvestMode) this.setHarvestMode(creep,source)
 
-        return this.actionStrategy[creep.memory.harvestMode].prepare(creep,source)
+        return this.actionStrategy[creep.memory.harvesterData.harvestMode].prepare(creep,source)
     }
     getResource?(creep:Creep):boolean{
-        const sourceID = creep.memory.sourceID
+        const sourceID = creep.memory.harvesterData.sourceID
         if(!sourceID) return false
         const source = Game.getObjectById(sourceID)
         if(!source) throw new Error("harvester的source不存在")
-        return this.actionStrategy[creep.memory.harvestMode].source(creep, source)
+        return this.actionStrategy[creep.memory.harvesterData.harvestMode].source(creep, source)
     }
     workWithTarget(creep:Creep):boolean{
-        return this.actionStrategy[creep.memory.harvestMode].target(creep)
+        return this.actionStrategy[creep.memory.harvesterData.harvestMode].target(creep)
     }
 
     body(room: Room, spawn: StructureSpawn): BodyPartConstant[] {
@@ -52,7 +57,7 @@ export default class HarvesterConfig implements RoleConfig{
 
                 // 把该位置存缓存到自己内存
                 const { roomName, x, y } = creep.pos
-                creep.memory.droppedPos = `${roomName},${x},${y}`
+                creep.memory.harvesterData.droppedPos = `${roomName},${x},${y}`
 
                 // 如果脚下没有 container 及工地的话就放工地并发布建造任务
                 const posContinaer = creep.pos.lookFor(LOOK_STRUCTURES).filter(s => s.structureType === STRUCTURE_CONTAINER)
@@ -60,18 +65,17 @@ export default class HarvesterConfig implements RoleConfig{
 
                 if (posContinaer.length <= 0 && posContinaerSite.length <= 0) {
                     // container 建造任务的优先级应该是最高的
-                    creep.room.work.addTask({ type: 'buildStartContainer', sourceId: source.id, priority: 4 })
+                    creep.room.workController.addTask(new BuildContainerTask(source.id,4))
                 }
-
                 return true
             },
             // 挖能量
             source: (creep, source) => {
-                const workRoom = Game.rooms[creep.memory.workRoom]
+                const workRoom = Game.rooms[creep.memory.harvesterData.workRoom]
                 if (!workRoom) return false
 
                 // 如果有搬运工了就无脑采集
-                if (workRoom.transport.getUnit().length <= 0 && creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return true
+                if (workRoom.transportController.getUnit().length <= 0 && creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return true
 
                 creep.harvest(source)
                 this.goToDropPos(creep, source)
@@ -79,11 +83,11 @@ export default class HarvesterConfig implements RoleConfig{
             },
             // 把能量运到 spawn
             target: (creep) => {
-                const workRoom = Game.rooms[creep.memory.workRoom]
+                const workRoom = Game.rooms[creep.memory.harvesterData.workRoom]
                 if (!workRoom) return false
 
                 // 有运输工了就回去挖能量
-                if (creep.store[RESOURCE_ENERGY] <= 0 || workRoom.transport.getUnit().length > 0) return true
+                if (creep.store[RESOURCE_ENERGY] <= 0 || workRoom.transportController.getUnit().length > 0) return true
 
                 // 找到 spawn 然后把身上的能量全塞进去，不搜索 extension，因为启动时还没有 extension
                 // 就算是重建，只要保证 spawn 里有能量也能孵化搬运工了
@@ -108,7 +112,7 @@ export default class HarvesterConfig implements RoleConfig{
             prepare: (creep, source) => {
                 const container = source.getContainer()
                 if (!container) {
-                    creep.memory.harvestMode = "harvestStartMode"
+                    creep.memory.harvesterData.harvestMode = "harvestStartMode"
                     return false
                 }
 
@@ -118,10 +122,10 @@ export default class HarvesterConfig implements RoleConfig{
 
                 // container 掉血了就发布维修任务
                 if (container.hits < container.hitsMax) {
-                    const workRoom = Game.rooms[creep.memory.workRoom]
+                    const workRoom = Game.rooms[creep.memory.harvesterData.workRoom]
                     if (!workRoom) return false
                     // 修个小 container，派一个人来修就可以了，所以不用指定高优先级
-                    workRoom.work.updateTask({ type: 'repair' }, { dispath: true })
+                    workRoom.workController.updateTask(new RepairTask(), { dispath: true })
                 }
 
                 return true
@@ -130,7 +134,7 @@ export default class HarvesterConfig implements RoleConfig{
              * 采集阶段会无脑采集，过量的能量会掉在 container 上然后被接住存起来
              */
             source: (creep) => {
-                const sourceID = creep.memory.sourceID
+                const sourceID = creep.memory.harvesterData.sourceID
                 if(!sourceID) return false
                 const source = Game.getObjectById<Source>(sourceID)
                 if(!source){
@@ -146,12 +150,12 @@ export default class HarvesterConfig implements RoleConfig{
                     // 不然有可能出现 worker 吃能量比较快导致任务发布数量太少
                     if (container && container.store[RESOURCE_ENERGY] > 200) {
                         // 看看是不是已经有发布好的任务了
-                        const hasTransportTask = creep.room.transport.tasks.find((task) => {
-                            return task.taskType === 'transportTask' && (task as TransportTask).fromID === container.id
+                        const hasTransportTask = creep.room.transportController.tasks.find((task) => {
+                            return task.taskType === 'transportTask' && (task as TransportTask).from === container.id
                         })
 
                         // 没有任务的话才会发布
-                        !hasTransportTask && creep.room.transport.addTask(new TransportTask(
+                        !hasTransportTask && creep.room.transportController.addTask(new TransportTask(
                             container.id,creep.room.storage.id,RESOURCE_ENERGY,100
                         ))
                     }
@@ -174,12 +178,12 @@ export default class HarvesterConfig implements RoleConfig{
          */
         harvestStructureMode:{
             prepare: (creep, source) => {
-                const link = Game.getObjectById<StructureLink>(creep.memory.targetID as Id<StructureLink>) || creep.room.storage
+                const link = Game.getObjectById<StructureLink>(creep.memory.harvesterData.targetID as Id<StructureLink>) || creep.room.storage
 
                 // 目标没了，变更为启动模式
                 if (!link) {
-                    delete creep.memory.targetID
-                    creep.memory.harvestMode = "harvestStartMode"
+                    delete creep.memory.harvesterData.targetID
+                    creep.memory.harvesterData.harvestMode = "harvestStartMode"
                     return false
                 }
 
@@ -202,12 +206,12 @@ export default class HarvesterConfig implements RoleConfig{
                 return false
             },
             target: (creep) => {
-                const target = Game.getObjectById(creep.memory.targetID as Id<StructureLink>) || creep.room.storage
+                const target = Game.getObjectById(creep.memory.harvesterData.targetID as Id<StructureLink>) || creep.room.storage
 
                 // 目标没了，变更为启动模式
                 if (!target) {
-                    delete creep.memory.targetID
-                    creep.memory.harvestMode = "harvestStartMode"
+                    delete creep.memory.harvesterData.targetID
+                    creep.memory.harvesterData.harvestMode = "harvestStartMode"
                     return true
                 }
 
@@ -221,28 +225,28 @@ export default class HarvesterConfig implements RoleConfig{
 
         //外矿
         if(!source.room.controller || source.room.controller.level <= 0){
-            creep.memory.harvestMode = "harvestStartMode"
+            creep.memory.harvesterData.harvestMode = "harvestStartMode"
             return
         }
 
         //link
         const nearLink = source.getLink()
         if(nearLink){
-            creep.memory.harvestMode = "harvestStructureMode"
-            creep.memory.targetID = nearLink.id
+            creep.memory.harvesterData.harvestMode = "harvestStructureMode"
+            creep.memory.harvesterData.targetID = nearLink.id
             return
         }
 
         //container
         const nearContainer = source.getContainer()
         if(nearContainer){
-            creep.memory.harvestMode = "harvestContainerMode"
-            creep.memory.targetID = nearContainer.id
+            creep.memory.harvesterData.harvestMode = "harvestContainerMode"
+            creep.memory.harvesterData.targetID = nearContainer.id
             return
         }
 
         //默认启动模式
-        creep.memory.harvestMode = "harvestStartMode"
+        creep.memory.harvesterData.harvestMode = "harvestStartMode"
     }
 
     /**
@@ -254,9 +258,9 @@ export default class HarvesterConfig implements RoleConfig{
         let range = 0
 
         // 尝试从缓存里读位置
-        const droppedPos = creep.memory.droppedPos
+        const droppedPos = creep.memory.harvesterData.droppedPos
         if (droppedPos) {
-            const [ roomName, x, y ] = creep.memory.droppedPos.split(',')
+            const [ roomName, x, y ] = creep.memory.harvesterData.droppedPos.split(',')
             targetPos = new RoomPosition(Number(x), Number(y), roomName)
         }
         else {
@@ -264,7 +268,7 @@ export default class HarvesterConfig implements RoleConfig{
             // 之前就已经有点位了，自己保存一份
             if (droppedPos) {
                 const { roomName, x, y } = droppedPos
-                creep.memory.droppedPos = `${roomName},${x},${y}`
+                creep.memory.harvesterData.droppedPos = `${roomName},${x},${y}`
             }
             // 没有点位的话就要移动到 source，调整移动范围
             else range = 1
@@ -276,8 +280,7 @@ export default class HarvesterConfig implements RoleConfig{
         if (creep.pos.isEqualTo(targetPos)) return { result: OK, targetPos, range }
 
         // 执行移动
-        const resultPath = PathFinder.search(creep.pos,{pos:targetPos,range:range})
-        const result = creep.moveByPath(resultPath.path)
+        const result = creep.goTo(targetPos,{range:range})
         return { result, targetPos, range }
     }
 }

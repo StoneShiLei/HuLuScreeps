@@ -13,7 +13,7 @@ interface Source{
     /**
      * 获取该 source 丢弃位置及其上的能量
      */
-    getDroppedInfo(): { pos?: RoomPosition, energy?: Resource<RESOURCE_ENERGY> }
+    getDroppedInfo():DroppedInfo
     /**
      * 绑定 container 到该 source
      */

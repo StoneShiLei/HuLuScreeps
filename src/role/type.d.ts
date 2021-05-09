@@ -1,7 +1,7 @@
 
 
 interface RoleConfig{
-    // keepAlive?:()
+    keepAlive?(room:Room,memory:CreepMemory):boolean
     getReady?(creep:Creep):boolean
     getResource?(creep:Creep):boolean
     workWithTarget(creep:Creep):boolean
@@ -9,10 +9,7 @@ interface RoleConfig{
 }
 
 interface CreepMemory{
-    //资源id
-    sourceID?:Id<Source>
-    //工作目标id
-    targetID?:Id<Structure>
+
     //creep的角色
     role:AllRoles
     //是否经过了准备阶段

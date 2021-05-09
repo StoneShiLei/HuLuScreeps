@@ -1,4 +1,5 @@
 import { creepRoleConfig } from "role"
+import { minWallHits } from "setting"
 
 
 
@@ -43,8 +44,11 @@ export default class CreepExtension extends Creep {
         if(stateChange) this.memory.working = !this.memory.working
     }
 
-    public goTo(target:RoomPosition,opt?:MoveToOpts):ScreepsReturnCode{
-        return this.moveTo(target,opt)
+    public goTo(target:RoomPosition,opt?:GoToOpt):ScreepsReturnCode{
+        if(!this.memory.pathCache || Game.time % 5){
+            this.memory.pathCache = this.room.findPath(this.pos,target,opt)
+        }
+        return this.moveByPath(this.memory.pathCache)
     }
 
     /**
@@ -54,7 +58,7 @@ export default class CreepExtension extends Creep {
      * @returns true
      */
     public backToGetEnergy():boolean{
-        delete this.memory.sourceID
+        delete this.memory.sourceId
         return true
     }
 
@@ -88,7 +92,7 @@ export default class CreepExtension extends Creep {
      * @param target 要转移到的目标
      * @param RESOURCE 要转移的资源类型
      */
-    public transferTo(target: AnyCreep | Structure, RESOURCE: ResourceConstant, moveOpt: MoveToOpts = {}): ScreepsReturnCode {
+    public transferTo(target: AnyCreep | Structure, RESOURCE: ResourceConstant, moveOpt: GoToOpt = {}): ScreepsReturnCode {
         this.goTo(target.pos, moveOpt)
         return this.transfer(target, RESOURCE)
     }
@@ -109,6 +113,25 @@ export default class CreepExtension extends Creep {
     }
 
     /**
+     * 稳定新墙
+     * 会把内存中 fillWallId 标注的墙声明值刷到定值以上
+     */
+    public steadyWall(): OK | ERR_NOT_FOUND {
+        const wallID = this.memory.fillWallId
+        if(!wallID) return ERR_NOT_FOUND
+        const wall = Game.getObjectById(wallID)
+        if (!wall) return ERR_NOT_FOUND
+
+        if (wall.hits < minWallHits) {
+            const result = this.repair(wall)
+            if (result == ERR_NOT_IN_RANGE) this.goTo(wall.pos)
+        }
+        else delete this.memory.fillWallId
+
+        return OK
+    }
+
+    /**
      * 建设房间内存在的建筑工地
      *
      * @param targetConstruction 要建造的目标工地，该参数无效的话将自行挑选工地
@@ -118,22 +141,51 @@ export default class CreepExtension extends Creep {
 
         if(!target) return ERR_NOT_FOUND
 
+        // 上面发现有墙要刷了，这个 tick 就不再造建造了
+        // 防止出现造好一个 rampart，然后直接造下一个 rampart，造好后又扭头去刷第一个 rampart 的小问题出现
+        if (this.memory.fillWallId) return ERR_BUSY
+
+        //建设
         const buildResult = this.build(target)
+
+        if (buildResult == OK) {
+            // 如果修好的是 rempart 的话就移除墙壁缓存
+            // 让维修单位可以快速发现新 rempart
+            if (target.structureType == STRUCTURE_RAMPART) delete this.room.memory.focusWall
+        }
+
         if(buildResult == ERR_NOT_IN_RANGE){
             this.goTo(target.pos)
         }
         return buildResult
     }
 
+    /**
+     * 建筑目标获取
+     * 优先级：指定的目标 > 自己保存的目标 > 房间内保存的目标
+     */
     private getBuildTarget(target?:ConstructionSite):ConstructionSite | null{
+        // 指定了目标，直接用，并且把 id 备份一下
         if(target){
             this.memory.constructionSiteId = target.id
             return target
         }
+        // 没有指定目标，或者指定的目标消失了，从自己内存里找
         else{
             const selfKeepTarget = Game.getObjectById<ConstructionSite>(this.memory.constructionSiteId || "")
             if(selfKeepTarget) return selfKeepTarget
             else{
+                // const structure = buildCompleteSite[this.memory.constructionSiteId]
+
+                // // 如果刚修好的是墙的话就记住该墙的 id，然后把血量刷高一点）
+                // if (structure && (
+                //     structure.structureType === STRUCTURE_WALL ||
+                //     structure.structureType === STRUCTURE_RAMPART
+                // )) {
+                //     this.memory.fillWallId = structure.id as Id<StructureWall | StructureRampart>
+                //     // 同时发布刷墙任务
+                //     this.room.work.updateTask({ type: 'fillWall' })
+                // }
                 delete this.memory.constructionSiteId
             }
         }

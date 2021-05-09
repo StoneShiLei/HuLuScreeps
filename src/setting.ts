@@ -1,13 +1,21 @@
 
-/**
- * getAvailableSource 中，建筑存储中能量大于多少才会被当作目标
- */
- export const ENERGY_USE_LIMIT = {
-    [STRUCTURE_TERMINAL]: 10000,
-    [STRUCTURE_STORAGE]: 50000,
-    [STRUCTURE_CONTAINER]: 400,
-    [STRUCTURE_LINK]: 0,
-    // 一个 carry 50 容积，至少要保证能有一个 carry 的能量给填充单位用
-    [RESOURCE_ENERGY]: 100
 
+/**
+ * transporter 触发后事处理的最小生命
+ */
+export const TRANSFER_DEATH_LIMIT = 20
+
+// 造好新墙时 builder 会先将墙刷到超过下面值，之后才会去建其他建筑
+export const minWallHits = 8000
+
+// 房间建筑维修需要的设置
+export const repairSetting = {
+    // 在 tower 的能量高于该值时才会刷墙
+    energyLimit: 600,
+    // 普通建筑维修的检查间隔
+    checkInterval: 8,
+    // 墙壁维修的检查间隔
+    wallCheckInterval: 3,
+    // 墙壁的关注时间
+    focusTime: 100
 }

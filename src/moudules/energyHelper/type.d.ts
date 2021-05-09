@@ -16,3 +16,18 @@
   * creep 能从中获取能量的建筑
   */
  type EnergySourceStructure = StructureLink | StructureContainer | StructureTerminal | StructureStorage
+
+
+ /**
+ * 能量搜索方法
+ * 外部模块提供的搜索方法都应符合这个标准
+ */
+type EnergyTargetFinder = (targets: EnergyTarget[]) => EnergyTarget
+type EnergyTargetFilter = (targets: EnergyTarget[]) => EnergyTarget[]
+
+interface Room {
+    /**
+     * 本 tick 房间内的可用能量源缓存
+     */
+    _energyFilterObj: EnergyTarget[]
+}

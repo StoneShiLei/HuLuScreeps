@@ -1,13 +1,22 @@
 
 
-
-
 //全部任务类型
 type AllTaskType = AllTransporterTaskType | AllWorkerTaskType
 
 //任务分类类型
-type AllTransporterTaskType = TransportTaskType | FillExtensionTaskType | FillTowerTaskType | NoTaskType
-type AllWorkerTaskType = UpgradeTaskType | BuildContainerTaskType | BuildTaskType | RepairTaskType | FillWallTaskType | NoTaskType
+type AllTransporterTaskType =
+    TransportTaskType |
+    FillExtensionTaskType |
+    FillTowerTaskType |
+    NoTaskType
+
+type AllWorkerTaskType =
+    UpgradeTaskType |
+    BuildContainerTaskType |
+    BuildTaskType |
+    RepairTaskType |
+    FillWallTaskType |
+    NoTaskType
 
 //全部任务定义
 type NoTaskType = "NoTask"

@@ -1,12 +1,12 @@
 import Utils from "utils/utils";
-import BaseTaskController from "./taskController/controller/baseTaskController";
 import TransportTaskController from "./taskController/controller/transportTaskController";
+import WorkTaskController from "./taskController/controller/workTaskController";
 
 export default function mountTaskController(){
 
     const controllers:[string,TaskController][] = [
         ['transportController',TransportTaskController],
-
+        ['workController',WorkTaskController],
     ]
 
     const controllerStorage:ControllerStorage = {}
@@ -50,6 +50,7 @@ export default function mountTaskController(){
         /**
          * 物流任务模块
          */
-        transport: TransportTaskController
+         transportController: TransportTaskController
+         workController: WorkTaskController
     }
 }
