@@ -9,6 +9,7 @@
     "build": "rollup -c",
     "push-main": "rollup -c --environment DEST:main",
     "push-pserver": "rollup -c --environment DEST:pserver",
+    "push-screepscc": "rollup -c --environment DEST:screepscc",
     "push-season": "rollup -c --environment DEST:season",
     "push-sim": "rollup -c --environment DEST:sim",
     "test": "npm run test-unit",
