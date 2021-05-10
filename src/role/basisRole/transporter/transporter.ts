@@ -8,12 +8,14 @@ import { TRANSFER_DEATH_LIMIT } from "setting";
 export default class TransporterConfig implements RoleConfig{
 
     getResource?(creep:Creep):boolean{
+        if(!creep.memory.transporterData) return false
         const { sourceID,workRoom } = creep.memory.transporterData
         if(creep.ticksToLive && creep.ticksToLive <= TRANSFER_DEATH_LIMIT) return this.deathPrepare(creep,sourceID)
         return Game.rooms[workRoom]?.transportController.getAction(creep).getResource()
     }
 
     workWithTarget(creep: Creep): boolean {
+        if(!creep.memory.transporterData) return true
         const { workRoom } = creep.memory.transporterData
         return Game.rooms[workRoom]?.transportController.getAction(creep).workWithTarget()
     }

@@ -21,7 +21,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
     const spawn = Game.spawns['Spawn1'];
     const room = spawn.room;
 
-
     // var harvesters = _.filter(Game.creeps, (creep) => creep.name.includes('harvester'));
 
 

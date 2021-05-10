@@ -10,8 +10,9 @@ import RepairTask from "moudules/taskController/task/wokerTask/repairTask";
 export default class HarvesterConfig implements RoleConfig{
 
     getReady?(creep:Creep):boolean{
-        const harvestRoom = creep.memory.harvesterData.harvestRoom
-        const sourceID = creep.memory.harvesterData.sourceID
+
+        if(!creep.memory.harvesterData) return false
+        const {harvestRoom , sourceID}  = creep.memory.harvesterData
         if(!sourceID) return false
         if(creep.room.name !== harvestRoom){
             creep.goTo(new RoomPosition(25,25,harvestRoom))
@@ -25,13 +26,15 @@ export default class HarvesterConfig implements RoleConfig{
         return this.actionStrategy[creep.memory.harvesterData.harvestMode].prepare(creep,source)
     }
     getResource?(creep:Creep):boolean{
-        const sourceID = creep.memory.harvesterData.sourceID
+        if(!creep.memory.harvesterData) return false
+        const {sourceID} = creep.memory.harvesterData
         if(!sourceID) return false
         const source = Game.getObjectById(sourceID)
         if(!source) throw new Error("harvester的source不存在")
         return this.actionStrategy[creep.memory.harvesterData.harvestMode].source(creep, source)
     }
     workWithTarget(creep:Creep):boolean{
+        if(!creep.memory.harvesterData) return true
         return this.actionStrategy[creep.memory.harvesterData.harvestMode].target(creep)
     }
 
@@ -48,6 +51,8 @@ export default class HarvesterConfig implements RoleConfig{
          */
         harvestStartMode:{
             prepare: (creep, source) => {
+                if(!creep.memory.harvesterData) return false
+
                 const { targetPos, range } = this.goToDropPos(creep, source)
                 // 没有抵达位置就准备未完成
                 if (!creep.pos.inRangeTo(targetPos, range)) return false
@@ -71,6 +76,8 @@ export default class HarvesterConfig implements RoleConfig{
             },
             // 挖能量
             source: (creep, source) => {
+                if(!creep.memory.harvesterData) return false
+
                 const workRoom = Game.rooms[creep.memory.harvesterData.workRoom]
                 if (!workRoom) return false
 
@@ -83,6 +90,8 @@ export default class HarvesterConfig implements RoleConfig{
             },
             // 把能量运到 spawn
             target: (creep) => {
+                if(!creep.memory.harvesterData) return true
+
                 const workRoom = Game.rooms[creep.memory.harvesterData.workRoom]
                 if (!workRoom) return false
 
@@ -110,6 +119,8 @@ export default class HarvesterConfig implements RoleConfig{
          */
         harvestContainerMode:{
             prepare: (creep, source) => {
+                if(!creep.memory.harvesterData) return false
+
                 const container = source.getContainer()
                 if (!container) {
                     creep.memory.harvesterData.harvestMode = "harvestStartMode"
@@ -134,6 +145,8 @@ export default class HarvesterConfig implements RoleConfig{
              * 采集阶段会无脑采集，过量的能量会掉在 container 上然后被接住存起来
              */
             source: (creep) => {
+                if(!creep.memory.harvesterData) return false
+
                 const sourceID = creep.memory.harvesterData.sourceID
                 if(!sourceID) return false
                 const source = Game.getObjectById<Source>(sourceID)
@@ -178,6 +191,8 @@ export default class HarvesterConfig implements RoleConfig{
          */
         harvestStructureMode:{
             prepare: (creep, source) => {
+                if(!creep.memory.harvesterData) return false
+
                 const link = Game.getObjectById<StructureLink>(creep.memory.harvesterData.targetID as Id<StructureLink>) || creep.room.storage
 
                 // 目标没了，变更为启动模式
@@ -206,6 +221,8 @@ export default class HarvesterConfig implements RoleConfig{
                 return false
             },
             target: (creep) => {
+                if(!creep.memory.harvesterData) return true
+
                 const target = Game.getObjectById(creep.memory.harvesterData.targetID as Id<StructureLink>) || creep.room.storage
 
                 // 目标没了，变更为启动模式
@@ -222,6 +239,7 @@ export default class HarvesterConfig implements RoleConfig{
     }
 
     private setHarvestMode(creep:Creep,source:Source):void{
+        if(!creep.memory.harvesterData) return
 
         //外矿
         if(!source.room.controller || source.room.controller.level <= 0){
@@ -256,6 +274,8 @@ export default class HarvesterConfig implements RoleConfig{
     private goToDropPos(creep:Creep, source: Source): GoToDropPosResult {
         let targetPos: RoomPosition
         let range = 0
+
+        if(!creep.memory.harvesterData) throw new Error("没有找到角色harvesterData")
 
         // 尝试从缓存里读位置
         const droppedPos = creep.memory.harvesterData.droppedPos

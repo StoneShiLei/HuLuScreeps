@@ -12,6 +12,7 @@ export default class UpgradeTaskAction extends BaseWorkerTaskAction<UpgradeTask>
     }
 
     workWithTarget():boolean{
+        if(!this.creep.memory.workerData) return true
         const workRoom = this.creep.memory.workerData.workRoom
 
         if(this.creep.upgradeRoom(workRoom) === ERR_NOT_ENOUGH_RESOURCES){

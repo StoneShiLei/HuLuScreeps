@@ -28,6 +28,16 @@ interface CreepMemory{
      * 要填充的墙 id
      */
     fillWallId?: Id<StructureWall | StructureRampart>
+    /**
+     * 是否禁止重新孵化
+     */
+    cantRespawn?: boolean
+    /**
+     * 孵化该 creep 的房间
+     */
+    spawnRoom: string
+
+
 
     /**
      * 缓存路径

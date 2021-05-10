@@ -1,7 +1,7 @@
 
 
 interface CreepMemory{
-    transporterData:{
+    transporterData?:{
         /**
          * 要使用的资源存放建筑 id
          */

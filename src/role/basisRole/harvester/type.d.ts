@@ -1,6 +1,6 @@
 
 interface CreepMemory{
-    harvesterData:{
+    harvesterData?:{
         //资源id
         sourceID?:Id<Source>
         //工作目标id

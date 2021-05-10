@@ -318,6 +318,15 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
         else roomMemory.creeps[this.CREEP_SAVE_KEY] = JSON.stringify(this.creeps);
     }
 
+
+    /**
+     * 打印当前任务队列到控制台
+     */
+    public show(): string {
+        const logs = this.tasks.map(task => JSON.stringify(task))
+        return logs.join('\n')
+    }
+
     /**
      * 将队列信息绘制到房间上
      * @param startX 绘制窗口左上角 X 坐标

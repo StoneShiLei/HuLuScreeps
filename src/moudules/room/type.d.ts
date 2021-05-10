@@ -8,4 +8,18 @@ interface RoomMemory{
         id: Id<StructureWall | StructureRampart>
         endTime: number
     }
+
+    /**
+     * 该房间的孵化队列数据
+     */
+    spawnList?: string
 }
+
+interface Room{
+    sources?:Source[]
+}
+
+
+type MemoryKey = SpawnList
+
+type SpawnList = "spawnList"

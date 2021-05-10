@@ -19,3 +19,15 @@ export const repairSetting = {
     // 墙壁的关注时间
     focusTime: 100
 }
+
+// 用于维持房间能量正常运转的重要角色
+export const importantRoles: AllRoles[] = [ 'harvester', 'transporter'] //, 'processor' ]
+
+// creep 的默认内存
+export const creepDefaultMemory: CreepMemory = {
+    role: 'worker',
+    ready: false,
+    working: false,
+    spawnRoom: 'W1N1',
+    pathCache: []
+}
