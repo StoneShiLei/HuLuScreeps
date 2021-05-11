@@ -1,11 +1,12 @@
-import RepairTask from "moudules/taskController/task/wokerTask/repairTask"
+
+import FillWallTask from "../../task/wokerTask/fillWallTask"
 import BaseWorkerTaskAction from "./baseWorkerTaskAction"
 
 
 /**
- * 修理
+ * 刷墙
  */
-export default class RepairTaskAction extends BaseWorkerTaskAction<RepairTask> {
+export default class FillWallTaskAction extends BaseWorkerTaskAction<FillWallTask> {
 
     getResource():boolean{
         return true

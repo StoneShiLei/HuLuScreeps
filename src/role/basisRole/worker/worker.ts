@@ -8,14 +8,14 @@ import BodyAutoConfigUtil from "moudules/bodyConfig/bodyConfig"
 export default class WorkerConfig implements RoleConfig{
 
     getResource?(creep:Creep):boolean{
-        if(!creep.memory.workerData) return false
-        const { workRoom } = creep.memory.workerData
+        if(!creep.memory.data.workerData) return false
+        const { workRoom } = creep.memory.data.workerData
         return Game.rooms[workRoom]?.workController.getAction(creep).getResource()
     }
 
     workWithTarget(creep: Creep): boolean {
-        if(!creep.memory.workerData) return true
-        const { workRoom } = creep.memory.workerData
+        if(!creep.memory.data.workerData) return true
+        const { workRoom } = creep.memory.data.workerData
         return Game.rooms[workRoom]?.workController.getAction(creep).workWithTarget()
     }
 

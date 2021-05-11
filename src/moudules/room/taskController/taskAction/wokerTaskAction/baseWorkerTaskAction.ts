@@ -1,6 +1,6 @@
 import EnergyHelper from "moudules/energyHelper/energyHelper";
-import BaseTaskController from "moudules/taskController/controller/baseTaskController";
-import BaseWorkerTask from "moudules/taskController/task/wokerTask/baseWorkerTask";
+import BaseTaskController from "../../controller/baseTaskController";
+import BaseWorkerTask from "../../task/wokerTask/baseWorkerTask";
 /**
  * 任务工作逻辑基类
  */

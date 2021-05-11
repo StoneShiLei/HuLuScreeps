@@ -48,7 +48,7 @@ interface CreepMemory{
 
 
 interface Creep{
-    work():void
+    onWork():void
     goTo(target:RoomPosition,opt?:GoToOpt):ScreepsReturnCode
     getEngryFrom(target: AllEnergySource): ScreepsReturnCode
     transferTo(target:  AnyCreep | Structure, RESOURCE: ResourceConstant, moveOpt?: MoveToOpts): ScreepsReturnCode

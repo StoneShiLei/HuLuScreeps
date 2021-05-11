@@ -1,4 +1,4 @@
-import BuildTask from "moudules/taskController/task/wokerTask/buildTask"
+import BuildTask from "../../task/wokerTask/buildTask"
 import BaseWorkerTaskAction from "./baseWorkerTaskAction"
 
 

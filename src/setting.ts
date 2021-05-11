@@ -5,6 +5,12 @@
  */
 export const TRANSFER_DEATH_LIMIT = 20
 
+ /**
+  * 建造的优先级
+  * 越靠前建造优先级越高
+  */
+export const BUILD_PRIORITY = [ STRUCTURE_SPAWN, STRUCTURE_TOWER, STRUCTURE_EXTENSION, STRUCTURE_LINK ]
+
 // 造好新墙时 builder 会先将墙刷到超过下面值，之后才会去建其他建筑
 export const minWallHits = 8000
 
@@ -29,5 +35,20 @@ export const creepDefaultMemory: CreepMemory = {
     ready: false,
     working: false,
     spawnRoom: 'W1N1',
-    pathCache: []
+    pathCache: [],
+    data:{}
+}
+
+/**
+ * 房间运营单位的限制，自动调整时不会超过这个区间
+ */
+ export const BASE_ROLE_LIMIT: RoomBaseUnitLimit = {
+    worker: {
+        MAX: 20,
+        MIN: 1
+    },
+    transporter: {
+        MAX: 5,
+        MIN: 1
+    }
 }

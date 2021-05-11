@@ -1,5 +1,6 @@
-import BuildContainerTask from "moudules/taskController/task/wokerTask/buildContainerTask"
+
 import Utils from "utils/utils"
+import BuildContainerTask from "../../task/wokerTask/buildContainerTask"
 import BaseWorkerTaskAction from "./baseWorkerTaskAction"
 
 

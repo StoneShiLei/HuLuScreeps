@@ -1,4 +1,4 @@
-import UpgradeTask from "moudules/taskController/task/wokerTask/upgradeTask"
+import UpgradeTask from "../../task/wokerTask/upgradeTask"
 import BaseWorkerTaskAction from "./baseWorkerTaskAction"
 
 
@@ -12,8 +12,8 @@ export default class UpgradeTaskAction extends BaseWorkerTaskAction<UpgradeTask>
     }
 
     workWithTarget():boolean{
-        if(!this.creep.memory.workerData) return true
-        const workRoom = this.creep.memory.workerData.workRoom
+        if(!this.creep.memory.data.workerData) return true
+        const workRoom = this.creep.memory.data.workerData.workRoom
 
         if(this.creep.upgradeRoom(workRoom) === ERR_NOT_ENOUGH_RESOURCES){
             return this.creep.backToGetEnergy()

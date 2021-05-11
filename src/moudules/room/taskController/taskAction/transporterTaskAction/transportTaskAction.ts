@@ -1,4 +1,4 @@
-import TransportTask from "moudules/taskController/task/transporterTask/transporterTask";
+import TransportTask from "../../task/transporterTask/transporterTask";
 import BaseTransporterTaskAction from "./baseTransporterTaskAction";
 
 /**

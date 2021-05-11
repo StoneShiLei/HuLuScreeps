@@ -6,7 +6,7 @@ import { minWallHits } from "setting"
 export default class CreepExtension extends Creep {
 
 
-    public work():void{
+    public onWork(): void{
         // 检查 creep 内存中的角色是否存在
         if(!(this.memory.role in creepRoleConfig)){
             this.say('我没角色？')
@@ -22,6 +22,7 @@ export default class CreepExtension extends Creep {
             if(roleConfig.getReady) this.memory.ready = roleConfig.getReady(this)
             else this.memory.ready = true
         }
+        console.log(this.memory.ready)
 
         //　如果执行了 prepare 还没有 ready，就返回等下个 tick 再执行
         if(!this.memory.ready) return

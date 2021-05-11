@@ -1,8 +1,8 @@
-import FillExtensionTask from "moudules/taskController/task/transporterTask/fillExtensionTask";
+import RoomAccessor from "moudules/room/roomAccessor";
 import { creepRoleConfig } from "role";
 import { creepDefaultMemory, importantRoles } from "setting";
 import Utils from "utils/utils";
-import RoomAccessor from "../roomAccessor";
+import FillExtensionTask from "../taskController/task/transporterTask/fillExtensionTask";
 import RoomCreepReleaseUtil from "./roomCreepReleaseUtil";
 import SpawnTask from "./spawnTask";
 
@@ -53,9 +53,9 @@ export default class RoomSpawnController extends RoomAccessor<SpawnTask[]>{
      * 清空任务队列
      * @danger 非测试情况下不要调用！
      */
-    public clearTask(): void {
-        delete Game.rooms[this.roomName].memory[this.memoryKey]
-    }
+    // public clearTask(): void {
+    //     delete Game.rooms[this.roomName].memory[this.memoryKey]
+    // }
 
     /**
      * 将当前任务挂起
@@ -124,7 +124,7 @@ export default class RoomSpawnController extends RoomAccessor<SpawnTask[]>{
 
         // 设置 creep 内存
         let memory:CreepMemory = {...creepDefaultMemory,spawnRoom:this.room.name,role:task.role}  //todo
-
+        memory.data.harvesterData = task.data
         const bodys = creepWork.body(this.room,spawn)
         if(bodys.length <= 0) return ERR_NOT_ENOUGH_ENERGY
 

@@ -1,4 +1,54 @@
+
+
 export default class Utils{
+
+
+    /**
+     * 执行 Hash Map 中子元素对象的 work 方法
+     *
+     * @param hashMap 游戏对象的 hash map。如 Game.creeps、Game.spawns 等
+     * @param showCpu [可选] 传入指定字符串来启动该 Map 的数量统计
+     */
+    static doing(...hashMaps: object[]): void {
+        hashMaps.forEach((obj, index) => {
+            // 遍历执行 work
+            Object.values(obj).forEach(item => {
+                try{
+                    if (item.onWork) item.onWork()
+                }
+                catch(e){
+                    console.log(e)
+                }
+            })
+        })
+    }
+
+    /**
+     * 移除指定 creep
+     * 会移除名字中包含第一个参数的 creep
+     *
+     * @param creepNamePart 要移除的 creep 名称部分
+     * @param opts 移除配置项  是否批量移除      是否立刻移除
+     */
+    static removeCreep(creepNamePart:string,opts:Partial<{batch:boolean,immediate:boolean}>={}){
+        const options:{batch:boolean,immediate:boolean} = _.defaults(opts,{batch:false,immediate:false})
+
+        const removeFunc = (creep:Creep) =>{
+            if(!creep.name.includes(creepNamePart)) return false
+
+            if(options.immediate){
+                // 要删除内存再杀掉，不然会重新孵化
+                delete Memory.creeps[creep.name]
+                creep.suicide()
+            }
+            else creep.memory.cantRespawn = true
+            return true
+        }
+
+        const creeps = Object.values(Game.creeps)
+        if(options.batch) creeps.forEach(removeFunc)
+        else creeps.find(removeFunc)
+    }
 
     /**
      * 给目标类型添加getter

@@ -1,4 +1,5 @@
-import FillTowerTask from "moudules/taskController/task/transporterTask/fillTowerTask";
+
+import FillTowerTask from "../../task/transporterTask/fillTowerTask";
 import BaseTransporterTaskAction from "./baseTransporterTaskAction";
 
 /**

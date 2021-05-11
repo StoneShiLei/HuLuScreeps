@@ -1,50 +1,34 @@
-import mountTaskController from "moudules";
+
+import ConstructionController from "moudules/constructionController/constructionController";
 import mountCreep from "moudules/creep";
-import mountRoom from "moudules/room";
+import CreepNumberListener from "moudules/creep/creepNumberListener";
+import mountMouduleController, { mountRoom } from "moudules/room";
 import mountRoomPosition from "moudules/roomPosition";
 import { ErrorMapper } from "utils/errorMapper";
+import Utils from "utils/utils";
 
-mountTaskController()
+//初始化建筑控制器
+ConstructionController.init()
+//挂载creep
 mountCreep()
+//挂载room和position
 mountRoom()
 mountRoomPosition()
+//挂载模块控制器
+mountMouduleController()
 
 export const loop = ErrorMapper.wrapLoop(() => {
 
-    // for(var name in Memory.creeps) {
-    //     if(!Game.creeps[name]) {
-    //         delete Memory.creeps[name];
-    //     }
-    // }
-
-    const creeps = _.values<Creep>(Game.creeps)
-    const spawn = Game.spawns['Spawn1'];
-    const room = spawn.room;
-
-    // var harvesters = _.filter(Game.creeps, (creep) => creep.name.includes('harvester'));
-
-
-	// if (harvesters.length < 10) {
-		// spawn.spawnCreep(BodyAutoConfigUtil.createBodyGetter(BodyAutoConfigUtil.bodyAutoConfigs.harvester)(room,spawn), "test" + Game.time,{memory:{role:"harvester",working:false,sourceID:"ef990774d80108c",containerID:"3d34bb95aa3bf7f",getReady:false}});
-    // }
-
-
-        // for(let creep of creeps){
-        //     try{
-        //         if(creep.name.includes('harvester')){
-
-        //         }
-        //         else if(creep.name.includes('transporter')){
-
-        //         }
-        //         else if(creep.name.includes('worker')){
-
-        //         }
-        //     }
-        //     catch(error)
-        //     {
-        //         console.log(error)
-        //     }
-        // }
+    // const spawn = Game.spawns['Spawn1']
+    // console.log(JSON.stringify(spawn.prototype))
+    // console.log(spawn.room.controller?.onWork)
+    //creep生命维持
+    CreepNumberListener.run()
+    //执行onWork
+    Utils.doing(Game.structures,Game.creeps)
+    //放置建筑队列里的工地
+    ConstructionController.manageConstruction()
+    //保存建筑队列
+    ConstructionController.save()
 
 });
