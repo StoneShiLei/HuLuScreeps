@@ -31,11 +31,13 @@ type Worker = "worker"
 
 
 interface CreepMemory{
-    data:{
-        harvesterData?:HarvesterData
-        transporterData?:TransporterData
-        workerData?:WorkerData
-    }
+    data:CreepData
+}
+
+interface CreepData{
+    harvesterData?:HarvesterData
+    transporterData?:TransporterData
+    workerData?:WorkerData
 }
 
 interface EmptyData{}
@@ -50,14 +52,14 @@ interface HarvesterData{
     //要采集的房间
     harvestRoom:string
     //工作模式
-    harvestMode:AllHarvestMode
+    harvestMode?:AllHarvestMode
     //能量丢弃位置 roomName,x,y
-    droppedPos:string
+    droppedPos?:string
 }
 
 interface TransporterData{
     //要使用的资源存放建筑 id
-    sourceID:Id<StructureWithStore>
+    sourceID?:Id<StructureWithStore>
     //该 creep 的工作房间
     //例如一个外矿搬运者需要知道自己的老家在哪里
     workRoom: string

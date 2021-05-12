@@ -1,5 +1,8 @@
+import { filter } from "lodash"
+import ConstructionController from "moudules/constructionController/constructionController"
+import FillWallTask from "moudules/room/taskController/task/wokerTask/fillWallTask"
 import { creepRoleConfig } from "role"
-import { minWallHits } from "setting"
+import { minWallHits, repairSetting } from "setting"
 
 
 
@@ -22,23 +25,21 @@ export default class CreepExtension extends Creep {
             if(roleConfig.getReady) this.memory.ready = roleConfig.getReady(this)
             else this.memory.ready = true
         }
-        console.log(this.memory.ready)
 
         //　如果执行了 prepare 还没有 ready，就返回等下个 tick 再执行
         if(!this.memory.ready) return
 
         // 获取是否工作，没有 source 的话直接执行 target
         const working = roleConfig.getResource? this.memory.working : true
-
         let stateChange = false
 
         // 执行对应阶段
         // 阶段执行结果返回 true 就说明需要更换 working 状态
         if(working){
             if(roleConfig.workWithTarget && roleConfig.workWithTarget(this)) stateChange = true
-            else {
-                if(roleConfig.getResource && roleConfig.getResource(this)) stateChange = true
-            }
+        }
+        else {
+            if(roleConfig.getResource && roleConfig.getResource(this)) stateChange = true
         }
 
 
@@ -46,10 +47,12 @@ export default class CreepExtension extends Creep {
     }
 
     public goTo(target:RoomPosition,opt?:GoToOpt):ScreepsReturnCode{
-        if(!this.memory.pathCache || Game.time % 5){
-            this.memory.pathCache = this.room.findPath(this.pos,target,opt)
-        }
-        return this.moveByPath(this.memory.pathCache)
+        // if(!this.memory.pathCache || Game.time % 5){
+
+        // }
+        this.memory.pathCache = this.room.findPath(this.pos,target,opt)
+        const result = this.moveByPath(this.memory.pathCache)
+        return result
     }
 
     /**
@@ -133,6 +136,49 @@ export default class CreepExtension extends Creep {
     }
 
     /**
+     * 填充防御性建筑
+     * 包括 wall 和 rempart
+     * @returns 当没有墙需要刷时返回 false，否则返回 true
+     */
+    public fillDefenseStructure():boolean{
+        const focusWall = this.room.memory.focusWall
+        let targetWall: StructureWall | StructureRampart | null = null
+        // 该属性不存在 或者 当前时间已经大于关注时间 就刷新
+        if (!focusWall || (focusWall && Game.time >= focusWall.endTime)) {
+            // 获取所有没填满的墙
+
+            const walls =  this.room.find<StructureWall | StructureRampart>(FIND_STRUCTURES
+                ,{filter:s => s && (s.structureType === STRUCTURE_WALL || s.structureType === STRUCTURE_RAMPART) && s.hits < s.hitsMax})
+
+            // 没有目标就啥都不干
+            if (walls.length <= 0) return false
+
+            // 找到血量最小的墙
+            targetWall = walls.sort((a, b) => a.hits - b.hits)[0]
+
+            // 将其缓存在内存里
+            this.room.memory.focusWall = {
+                id: targetWall.id,
+                endTime: Game.time + repairSetting.focusTime
+            }
+        }
+
+        // 获取墙壁
+        if (!targetWall && focusWall) targetWall = Game.getObjectById(focusWall.id)
+        // 如果缓存里的 id 找不到墙壁，就清除缓存下次再找
+        if (!targetWall) {
+            delete this.room.memory.focusWall
+            // 这个时候返回 true，因为还不确定是否所有的墙都刷好了
+            return true
+        }
+
+        // 填充墙壁
+        const result = this.repair(targetWall)
+        if (result == ERR_NOT_IN_RANGE) this.goTo(targetWall.pos)
+        return true
+    }
+
+    /**
      * 建设房间内存在的建筑工地
      *
      * @param targetConstruction 要建造的目标工地，该参数无效的话将自行挑选工地
@@ -176,26 +222,35 @@ export default class CreepExtension extends Creep {
             const selfKeepTarget = Game.getObjectById<ConstructionSite>(this.memory.constructionSiteId || "")
             if(selfKeepTarget) return selfKeepTarget
             else{
-                // const structure = buildCompleteSite[this.memory.constructionSiteId]
+                const structure = ConstructionController.buildCompleteSite[this.memory.constructionSiteId || ""]
 
-                // // 如果刚修好的是墙的话就记住该墙的 id，然后把血量刷高一点）
-                // if (structure && (
-                //     structure.structureType === STRUCTURE_WALL ||
-                //     structure.structureType === STRUCTURE_RAMPART
-                // )) {
-                //     this.memory.fillWallId = structure.id as Id<StructureWall | StructureRampart>
-                //     // 同时发布刷墙任务
-                //     this.room.work.updateTask({ type: 'fillWall' })
-                // }
+                // 如果刚修好的是墙的话就记住该墙的 id，然后把血量刷高一点）
+                if (structure && (
+                    structure.structureType === STRUCTURE_WALL ||
+                    structure.structureType === STRUCTURE_RAMPART
+                )) {
+                    this.memory.fillWallId = structure.id as Id<StructureWall | StructureRampart>
+                    // 同时发布刷墙任务
+                    this.room.workController.updateTask(new FillWallTask())
+                }
                 delete this.memory.constructionSiteId
             }
         }
 
-        const sites = this.room.find(FIND_MY_CONSTRUCTION_SITES)
-        if(sites.length <= 0) return null
-        const result = this.pos.findClosestByRange(sites)
-        if(!result) return null
-        this.memory.constructionSiteId = result.id
-        return result
+        // 自己内存里没找到，去房间内存里查之前缓存的
+        const roomKeepTarget = Game.getObjectById<ConstructionSite<BuildableStructureConstant>>(this.room.memory.constructionSiteId || "")
+        // 找到了，保存到自己内存里
+        if (roomKeepTarget) {
+            this.memory.constructionSiteId = this.room.memory.constructionSiteId
+            return roomKeepTarget
+        }
+
+        // 房间内存也没有缓存，重新搜索并缓存到房间
+        delete this.room.memory.constructionSiteId
+        const newTarget =  ConstructionController.getNearSite(this.pos)
+        if(newTarget) this.room.memory.constructionSiteId = newTarget.id
+
+        // 再没有就真没有了
+        return newTarget || null
     }
 }

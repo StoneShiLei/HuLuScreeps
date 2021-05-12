@@ -20,7 +20,7 @@ export default class WorkTaskController extends BaseTaskController<AllWorkerTask
     }
 
     constructor(roomName:string){
-        super(roomName,"transport")
+        super(roomName,"work")
     }
 
     getAction(creep: Creep): BaseWorkerTaskAction<BaseWorkerTask> {

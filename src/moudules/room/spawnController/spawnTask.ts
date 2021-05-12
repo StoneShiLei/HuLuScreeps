@@ -12,9 +12,9 @@ export default class SpawnTask<Role extends AllRoles = AllRoles>{
     /**
      * 该creep的工作data
      */
-    data:AllData
+    data:CreepData
 
-    constructor(name:string,role:Role,data:AllData){
+    constructor(name:string,role:Role,data:CreepData){
         this.name = name
         this.role = role
         this.data = data

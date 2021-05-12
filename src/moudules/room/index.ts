@@ -17,7 +17,6 @@ export const mountRoom = function() {
 }
 
 export default function mountMouduleController(){
-
     const controllers:[string,Controller][] = [
         ['transportController',TransportTaskController],
         ['workController',WorkTaskController],
@@ -38,7 +37,6 @@ export default function mountMouduleController(){
         })
     })
 }
-
 
 /**
  * 任务控制器

@@ -124,7 +124,7 @@ export default class RoomSpawnController extends RoomAccessor<SpawnTask[]>{
 
         // 设置 creep 内存
         let memory:CreepMemory = {...creepDefaultMemory,spawnRoom:this.room.name,role:task.role}  //todo
-        memory.data.harvesterData = task.data
+        memory.data = task.data
         const bodys = creepWork.body(this.room,spawn)
         if(bodys.length <= 0) return ERR_NOT_ENOUGH_ENERGY
 

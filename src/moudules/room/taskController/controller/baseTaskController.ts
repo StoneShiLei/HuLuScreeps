@@ -17,6 +17,8 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
     abstract getAction(creep:Creep):ITaskAction
 
     constructor(roomName:string,type:string){
+        console.log(roomName)
+        console.log(type)
         this.roomName = roomName;
         this.TASK_SAVE_KEY = `${type}Tasks`;
         this.CREEP_SAVE_KEY = `${type}Creeps`;
@@ -172,7 +174,7 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
      * 获取单位的待执行任务
      * @param creep 要获取待执行任务的 creep
      */
-    public getUnitTask(creep:Creep):Task{
+    public getUnitTask(creep:Creep):Task | undefined{
         const doingTaskID = this.creeps[creep.name]?.doing
         let doingTask = this.getTask(doingTaskID)
         if(!doingTask){
@@ -216,7 +218,7 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
      * @param creep
      * @returns
      */
-    private distributionCreep(creep:Creep):Task{
+    private distributionCreep(creep:Creep):Task | undefined{
         if(this.creeps[creep.name]) this.creeps[creep.name].doing = undefined
         delete creep.memory.taskID
 
@@ -238,7 +240,8 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
             }
         }
 
-        throw new Error(`${this.roomName}的${this.type}任务控制器无法为${creep.name}分配合适的任务类型`)
+        //没有任务
+        return undefined
     }
 
     /**
@@ -313,7 +316,6 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
         const roomMemory = Memory.rooms[this.roomName]
         if(this.tasks.length <= 0) delete roomMemory.tasks[this.TASK_SAVE_KEY]
         else roomMemory.tasks[this.TASK_SAVE_KEY] = JSON.stringify(this.tasks.map(task =>{return {...task,workUnit:0}}))
-
         if(Object.keys(this.creeps).length <= 0) delete roomMemory.creeps[this.CREEP_SAVE_KEY]
         else roomMemory.creeps[this.CREEP_SAVE_KEY] = JSON.stringify(this.creeps);
     }

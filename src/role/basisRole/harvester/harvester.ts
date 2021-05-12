@@ -1,4 +1,5 @@
 import BodyAutoConfigUtil from "moudules/bodyConfig/bodyConfig";
+import ConstructionController from "moudules/constructionController/constructionController";
 import TransportTask from "moudules/room/taskController/task/transporterTask/transporterTask";
 import BuildContainerTask from "moudules/room/taskController/task/wokerTask/buildContainerTask";
 import RepairTask from "moudules/room/taskController/task/wokerTask/repairTask";
@@ -21,6 +22,7 @@ export default class HarvesterConfig implements RoleConfig{
         const source = Game.getObjectById<Source>(sourceID)
         if(!source) throw new Error("harvester的source不存在")
         if(!creep.memory.data.harvesterData.harvestMode) this.setHarvestMode(creep,source)
+        if(!creep.memory.data.harvesterData.harvestMode) throw new Error("设置harvesterMode失败")
         return this.actionStrategy[creep.memory.data.harvesterData.harvestMode].prepare(creep,source)
     }
     getResource?(creep:Creep):boolean{
@@ -29,10 +31,12 @@ export default class HarvesterConfig implements RoleConfig{
         if(!sourceID) return false
         const source = Game.getObjectById(sourceID)
         if(!source) throw new Error("harvester的source不存在")
+        if(!creep.memory.data.harvesterData.harvestMode) throw new Error("不存在harvesterMode")
         return this.actionStrategy[creep.memory.data.harvesterData.harvestMode].source(creep, source)
     }
     workWithTarget(creep:Creep):boolean{
         if(!creep.memory.data.harvesterData) return true
+        if(!creep.memory.data.harvesterData.harvestMode) throw new Error("不存在harvesterMode")
         return this.actionStrategy[creep.memory.data.harvesterData.harvestMode].target(creep)
     }
 
@@ -67,6 +71,8 @@ export default class HarvesterConfig implements RoleConfig{
                 const posContinaerSite = creep.pos.lookFor(LOOK_CONSTRUCTION_SITES).filter(s => s.structureType === STRUCTURE_CONTAINER)
 
                 if (posContinaer.length <= 0 && posContinaerSite.length <= 0) {
+                    ConstructionController.addConstructionSite([{ pos: creep.pos, type: STRUCTURE_CONTAINER }])
+
                     // container 建造任务的优先级应该是最高的
                     creep.room.workController.addTask(new BuildContainerTask(source.id,4))
                 }
@@ -278,7 +284,7 @@ export default class HarvesterConfig implements RoleConfig{
         // 尝试从缓存里读位置
         const droppedPos = creep.memory.data.harvesterData.droppedPos
         if (droppedPos) {
-            const [ roomName, x, y ] = creep.memory.data.harvesterData.droppedPos.split(',')
+            const [ roomName, x, y ] = droppedPos.split(',')
             targetPos = new RoomPosition(Number(x), Number(y), roomName)
         }
         else {

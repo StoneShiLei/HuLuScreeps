@@ -4,9 +4,15 @@ import UpgradeTask from "moudules/room/taskController/task/wokerTask/upgradeTask
 export default class ControllerExtension extends StructureController {
 
     public onWork(): void {
+
         // 解除这两行的注释以显示队列信息
         this.room.workController.draw(1, 3)
         this.room.transportController.draw(1, 13)
+
+        if(this.my && !this.room.memory.isInit) {
+            this.onLevelChange(this.level)
+            this.room.memory.isInit = true
+        }
 
         if (Game.time % 20) return
 

@@ -30,9 +30,10 @@ export default class RoomCreepReleaseUtil{
             this.spawner.addTask(new SpawnTask(
                 CreepNameGetter.harvester(roomName,index),
                 "harvester",{
-                    workRoom:roomName,
-                    harvestRoom:roomName,
-                    sourceID:source.id
+                    harvesterData:{workRoom:roomName,
+                        harvestRoom:roomName,
+                        sourceID:source.id
+                    }
                 }
 
             ))
@@ -73,9 +74,7 @@ export default class RoomCreepReleaseUtil{
                 this.spawner.addTask({
                     name:creepName,
                     role:type,
-                    data:{
-                        workRoom:room.name
-                    }
+                    data:type === 'worker'? {workerData:{workRoom:room.name}} :{transporterData:{workRoom:room.name}}
                 })
             }
         }

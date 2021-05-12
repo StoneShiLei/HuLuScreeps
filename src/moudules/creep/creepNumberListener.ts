@@ -15,7 +15,6 @@ export default class CreepNumberListener{
             // creep 的内存不可能完全未空，所以这里只有可能是 creep 主动释放（比如去了其他 shard）
             // 所以这里不予重生
             if (Object.keys(Memory.creeps[name]).length <= 0) {
-                // console.log(name, '离开了', Game.shard.name)
                 delete Memory.creeps[name]
                 continue
             }
