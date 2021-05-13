@@ -1,4 +1,5 @@
 import Utils from "utils/utils";
+import ContructionSiteExtension from "./constructionSite/extension";
 import SourceExtension from "./source/extension";
 import SpawnExtension from "./spawnController/extension";
 import RoomSpawnController from "./spawnController/roomSpawnController";
@@ -14,6 +15,7 @@ export const mountRoom = function() {
     Utils.assignPrototype(StructureSpawn,SpawnExtension)
     Utils.assignPrototype(StructureContainer,ContainerExtension)
     Utils.assignPrototype(StructureController,ControllerExtension)
+    Utils.assignPrototype(ConstructionSite,ContructionSiteExtension)
 }
 
 export default function mountMouduleController(){

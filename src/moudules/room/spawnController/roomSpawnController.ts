@@ -24,6 +24,25 @@ export default class RoomSpawnController extends RoomAccessor<SpawnTask[]>{
     }
 
     /**
+     * 将队列信息绘制到房间上
+     * @param startX 绘制窗口左上角 X 坐标
+     * @param startY 绘制窗口左上角 Y 坐标
+     */
+    public draw(startX: number, startY: number): void {
+        const data = this.memory
+        if(!data) return
+        let logs:string[] = []
+        for(const task of data){
+            logs.push(task.name)
+        }
+        const info = [`Spawn队列 ${logs.join(', ')}`]
+
+        const room = Game.rooms[this.roomName]
+        const style: TextStyle = { align: 'left', opacity: 0.5 }
+        info.map((log, index) => room.visual.text(log, startX, startY + index, style))
+    }
+
+    /**
      * 向生产队列里推送一个生产任务
      *
      * @param task 新的孵化任务

@@ -106,13 +106,16 @@ export default class CreepExtension extends Creep {
      * @param roomName
      * @returns
      */
-    public upgradeRoom(roomName:string):ScreepsReturnCode{
-        const room = Game.rooms[roomName]
-        if(!roomName) return ERR_NOT_FOUND
-        const controller = room.controller
-        if(!controller) return ERR_NOT_FOUND
-        const result = this.upgradeController(controller)
-        if(result == ERR_NOT_FOUND) this.goTo(controller.pos)
+     public upgradeRoom(roomName: string): ScreepsReturnCode {
+        const workRoom = Game.rooms[roomName]
+        if (!workRoom) {
+            this.goTo(new RoomPosition(25, 25, roomName))
+            return ERR_NOT_IN_RANGE
+        }
+        if(!workRoom.controller) return ERR_NOT_FOUND
+        const result = this.upgradeController(workRoom.controller)
+
+        if (result == ERR_NOT_IN_RANGE) this.goTo(workRoom.controller.pos)
         return result
     }
 

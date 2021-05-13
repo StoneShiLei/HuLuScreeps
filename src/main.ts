@@ -24,7 +24,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
     //creep生命维持
     CreepNumberListener.run()
     //执行onWork
-    Utils.doing(Game.structures,Game.creeps)
+    Utils.doing(Game.constructionSites,Game.structures,Game.creeps)
     //放置建筑队列里的工地
     ConstructionController.manageConstruction()
     //保存建筑队列

@@ -17,8 +17,6 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
     abstract getAction(creep:Creep):ITaskAction
 
     constructor(roomName:string,type:string){
-        console.log(roomName)
-        console.log(type)
         this.roomName = roomName;
         this.TASK_SAVE_KEY = `${type}Tasks`;
         this.CREEP_SAVE_KEY = `${type}Creeps`;
@@ -297,6 +295,8 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
      */
     private init():void{
         const roomMemory = Memory.rooms[this.roomName]
+        if(!roomMemory.tasks) roomMemory.tasks = {[this.TASK_SAVE_KEY]:'[]'}
+        if(!roomMemory.creeps) roomMemory.creeps = {[this.CREEP_SAVE_KEY]:'{}'}
         const tasksJson = roomMemory.tasks[this.TASK_SAVE_KEY]
         const creepsJson = roomMemory.creeps[this.CREEP_SAVE_KEY]
         this.tasks = JSON.parse(tasksJson || '[]')
