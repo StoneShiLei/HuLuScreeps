@@ -31,7 +31,7 @@ export default abstract class BaseWorkerTaskAction<Task extends BaseWorkerTask> 
 
         //如果source不存在  则重新查找并缓存
         if(!resource){
-            resource = EnergyHelper.getRoomEnergyTarget(this.creep.room,EnergyHelper.getClosestTo(this.creep.pos))
+            resource = EnergyHelper.getRoomEnergyTarget(this.creep.room,EnergyHelper.getClosestTo(this.creep.pos),EnergyHelper.withLimit)
             this.creep.memory.sourceId = resource.id
         }
 

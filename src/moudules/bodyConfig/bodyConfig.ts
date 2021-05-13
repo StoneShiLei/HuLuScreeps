@@ -73,8 +73,6 @@ export default class BodyAutoConfigUtil {
         // [ [ TOUGH ], [ WORK, WORK ], [ MOVE, MOVE, MOVE ] ]
         const bodys:BodyPartConstant[][] = Object.keys(bodySet).map(type => Array(bodySet[type as BodyPartConstant]).fill(type))
         // 把二维数组展平
-        const resultArr:BodyPartConstant[] = []
-        // return resultArr.concat.apply([],tempArr)
         const result:BodyPartConstant[] = []
         return result.concat(...bodys)
     }
@@ -90,12 +88,13 @@ export default class BodyAutoConfigUtil {
                 const availableEnergyCheck = (Number(level) <= room.energyAvailable)
                 const dryCheck = (spawn.spawnCreep(bodyConfig[level as keyof BodyConfig], 'bodyTester', { dryRun: true }) == OK)
 
+
                 return availableEnergyCheck && dryCheck
             })
             if (!targetLevel) return [ ]
-
             // 获取身体部件
             const bodys: BodyPartConstant[] = bodyConfig[targetLevel as keyof BodyConfig]
+            // console.log(`RoomEnergyAvailable为${room.energyAvailable},TargetLevl为${targetLevel},身体部件为${JSON.stringify(bodys)},reverse为${JSON.stringify(Object.keys(bodyConfig).reverse())}`)
 
             return bodys
         }
