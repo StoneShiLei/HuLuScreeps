@@ -59,15 +59,14 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
      * @param taskIdentifier 要移除的任务索引（key 或者 type）
      */
     public removeTask(taskIdentifier: number): OK | ERR_NOT_FOUND
-    public removeTask(taskIdentifier: Task): OK | ERR_NOT_FOUND
-    public removeTask(taskIdentifier: number | Task): OK | ERR_NOT_FOUND {
+    public removeTask(taskIdentifier: AllTaskType): OK | ERR_NOT_FOUND
+    public removeTask(taskIdentifier: number | AllTaskType): OK | ERR_NOT_FOUND {
         const removeTaskIDs:number[] = []
 
         // 移除任务并收集被移除的任务索引
         this.tasks = this.tasks.filter(task => {
             const prop = (typeof taskIdentifier === 'number') ? 'id' : 'taskType'
-            if(task[prop] !== taskIdentifier) return true
-
+            if(task[prop] !== taskIdentifier.toString()) return true
             removeTaskIDs.push(task.id)
             return false
         })
@@ -111,7 +110,7 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
 
             // 状态变化就需要重新分派
             if(task.priority !== newTask.priority || task.staffCount !== newTask.staffCount) needRedispath = true
-
+            newTask.id = task.id
             return Object.assign(task,newTask)
         })
 

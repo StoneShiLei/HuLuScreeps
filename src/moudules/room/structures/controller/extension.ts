@@ -1,3 +1,4 @@
+import BuildTask from "moudules/room/taskController/task/wokerTask/buildTask"
 import UpgradeTask from "moudules/room/taskController/task/wokerTask/upgradeTask"
 import Utils from "utils/utils"
 
@@ -10,6 +11,11 @@ export default class ControllerExtension extends StructureController {
         this.room.workController.draw(1, 3)
         this.room.transportController.draw(1, 13)
         this.room.spawnController.draw(1,23)
+
+        // const x =this.room.find(FIND_CONSTRUCTION_SITES)
+        // if(x && x.length != 0){
+        //     this.room.workController.removeTask("build")
+        // }
 
         // console.log("任务id   " + this.room.workController.tasks[0].id)
         // for(const name in Game.creeps){
