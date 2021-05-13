@@ -5,7 +5,7 @@ interface RoleConfig{
     getReady?(creep:Creep):boolean
     getResource?(creep:Creep):boolean
     workWithTarget(creep:Creep):boolean
-    body(room:Room,spawn:StructureSpawn):BodyPartConstant[]
+    body(room:Room,spawn:StructureSpawn,data:CreepData):BodyPartConstant[]
 }
 
 interface CreepMemory{

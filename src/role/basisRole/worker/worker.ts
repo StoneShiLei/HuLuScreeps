@@ -19,7 +19,7 @@ export default class WorkerConfig implements RoleConfig{
         return Game.rooms[workRoom]?.workController.getAction(creep).workWithTarget()
     }
 
-    body(room: Room, spawn: StructureSpawn): BodyPartConstant[] {
+    body(room: Room, spawn: StructureSpawn,data:CreepData): BodyPartConstant[] {
         return BodyAutoConfigUtil.createBodyGetter(BodyAutoConfigUtil.bodyAutoConfigs.worker)(room,spawn)
     }
 

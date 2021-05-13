@@ -56,7 +56,7 @@ export default class BuildContainerTaskAction extends BaseWorkerTaskAction<Build
         const containerSites = source?.pos.findInRange(FIND_CONSTRUCTION_SITES,2,
             {filter:site => site && site.structureType === STRUCTURE_CONTAINER})
 
-            //找不到说明任务已经完成
+        //找不到说明任务已经完成
         if(!containerSites || containerSites.length <= 0){
             this.controller.removeTask(this.task.id)
             return true

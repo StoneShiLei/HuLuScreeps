@@ -20,7 +20,7 @@ export default class TransporterConfig implements RoleConfig{
         return Game.rooms[workRoom]?.transportController.getAction(creep).workWithTarget()
     }
 
-    body(room: Room, spawn: StructureSpawn): BodyPartConstant[] {
+    body(room: Room, spawn: StructureSpawn,data:CreepData): BodyPartConstant[] {
         return BodyAutoConfigUtil.createBodyGetter(BodyAutoConfigUtil.bodyAutoConfigs.transporter)(room,spawn)
     }
 

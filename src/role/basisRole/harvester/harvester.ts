@@ -11,7 +11,9 @@ import RepairTask from "moudules/room/taskController/task/wokerTask/repairTask";
 export default class HarvesterConfig implements RoleConfig{
 
     getReady?(creep:Creep):boolean{
+
         if(!creep.memory.data.harvesterData) return false
+
         const {harvestRoom , sourceID}  = creep.memory.data.harvesterData
         if(!sourceID) return false
         if(creep.room.name !== harvestRoom){
@@ -21,7 +23,8 @@ export default class HarvesterConfig implements RoleConfig{
 
         const source = Game.getObjectById<Source>(sourceID)
         if(!source) throw new Error("harvester的source不存在")
-        if(!creep.memory.data.harvesterData.harvestMode) this.setHarvestMode(creep,source)
+
+        this.setHarvestMode(creep,source)
         if(!creep.memory.data.harvesterData.harvestMode) throw new Error("设置harvesterMode失败")
         return this.actionStrategy[creep.memory.data.harvesterData.harvestMode].prepare(creep,source)
     }
@@ -40,8 +43,13 @@ export default class HarvesterConfig implements RoleConfig{
         return this.actionStrategy[creep.memory.data.harvesterData.harvestMode].target(creep)
     }
 
-    body(room: Room, spawn: StructureSpawn): BodyPartConstant[] {
-        return BodyAutoConfigUtil.createBodyGetter(BodyAutoConfigUtil.bodyAutoConfigs.harvester)(room,spawn) //data
+    body(room: Room, spawn: StructureSpawn,data:CreepData): BodyPartConstant[] {
+        if(!data.harvesterData) throw new Error("harvesterData不存在 无法生成body")
+        const source = Game.getObjectById(data.harvesterData?.sourceID)
+        const bodyConfig = !source || !source.getLink() ?
+            BodyAutoConfigUtil.bodyAutoConfigs.harvester : BodyAutoConfigUtil.bodyAutoConfigs.worker
+
+        return BodyAutoConfigUtil.createBodyGetter(bodyConfig)(room,spawn) //data
     }
 
     private actionStrategy:ActionStrategy = {
@@ -74,7 +82,7 @@ export default class HarvesterConfig implements RoleConfig{
                     ConstructionController.addConstructionSite([{ pos: creep.pos, type: STRUCTURE_CONTAINER }])
 
                     // container 建造任务的优先级应该是最高的
-                    creep.room.workController.addTask(new BuildContainerTask(source.id,4))
+                    creep.room.workController.addTask(new BuildContainerTask(source.id,10))
                 }
                 return true
             },
@@ -266,7 +274,6 @@ export default class HarvesterConfig implements RoleConfig{
             creep.memory.data.harvesterData.targetID = nearContainer.id
             return
         }
-
         //默认启动模式
         creep.memory.data.harvesterData.harvestMode = "harvestStartMode"
     }

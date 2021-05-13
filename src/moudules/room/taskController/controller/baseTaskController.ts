@@ -62,11 +62,11 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
     public removeTask(taskIdentifier: AllTaskType): OK | ERR_NOT_FOUND
     public removeTask(taskIdentifier: number | AllTaskType): OK | ERR_NOT_FOUND {
         const removeTaskIDs:number[] = []
-
         // 移除任务并收集被移除的任务索引
         this.tasks = this.tasks.filter(task => {
             const prop = (typeof taskIdentifier === 'number') ? 'id' : 'taskType'
-            if(task[prop] !== taskIdentifier.toString()) return true
+            const tiden = (typeof taskIdentifier === 'number') ? taskIdentifier : taskIdentifier.toString()
+            if(task[prop] != taskIdentifier) return true
             removeTaskIDs.push(task.id)
             return false
         })
@@ -334,7 +334,7 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
      * @param startY 绘制窗口左上角 Y 坐标
      */
     public draw(startX: number, startY: number): void {
-        const logs = [ `已注册单位 ${Object.keys(this.creeps).join(', ')}` ]
+        const logs = [ `已注册单位 【${Object.keys(this.creeps).length}】 ${Object.keys(this.creeps).join(', ')}` ]
         logs.push(...this.tasks.map(task => `[类型] ${task.taskType} [索引] ${task.id} [需求数量] ${task.staffCount} [执行数量] ${task.workUnit} [优先级] ${task.priority}`))
 
         const room = Game.rooms[this.roomName]

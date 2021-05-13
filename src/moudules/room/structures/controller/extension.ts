@@ -12,11 +12,8 @@ export default class ControllerExtension extends StructureController {
         this.room.transportController.draw(1, 13)
         this.room.spawnController.draw(1,23)
 
-        // const x =this.room.find(FIND_CONSTRUCTION_SITES)
-        // if(x && x.length != 0){
-        //     this.room.workController.removeTask("build")
-        // }
-
+        // if(this.room.memory.transporterNum < 3)
+        // this.room.spawnController.release.changeBaseUnit("transporter",3 - this.room.memory.transporterNum )
         // console.log("任务id   " + this.room.workController.tasks[0].id)
         // for(const name in Game.creeps){
         //     const creep = Game.creeps[name]
