@@ -32,7 +32,7 @@ export default abstract class BaseWorkerTaskAction<Task extends BaseWorkerTask> 
         //如果source不存在  则重新查找并缓存
         if(!resource){
             resource = EnergyHelper.getRoomEnergyTarget(this.creep.room,EnergyHelper.getClosestTo(this.creep.pos),EnergyHelper.withLimit)
-            this.creep.memory.sourceId = resource.id
+            if(resource) this.creep.memory.sourceId = resource.id
         }
 
         //还是获取不到resource
@@ -59,6 +59,7 @@ export default abstract class BaseWorkerTaskAction<Task extends BaseWorkerTask> 
 export class NoTaskAction extends BaseWorkerTaskAction<BaseWorkerTask>{
     getResource(): boolean {
         this.creep.say('💤')
+        this.creep.goTo(new RoomPosition(25, 25, this.creep.room.name))
         return false
     }
     workWithTarget(): boolean {

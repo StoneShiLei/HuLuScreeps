@@ -1,6 +1,5 @@
 
  interface RoomMemory{
-    isInit:boolean
     /**
      * 当前被 repairer 或 tower 关注的墙
      */
@@ -16,6 +15,10 @@
 
 interface Room{
     sources?:Source[]
+    /**
+     * 焦点墙，维修单位总是倾向于优先修复该墙体
+     */
+    _importantWall: StructureWall | StructureRampart
 }
 
 

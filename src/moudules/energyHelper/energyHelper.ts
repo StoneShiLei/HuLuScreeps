@@ -22,10 +22,9 @@ export default class EnergyHelper {
      *
      * @param pos 目标位置
      */
-    static getClosestTo: (pos: RoomPosition) => EnergyTargetFinder = (pos) => {
+    static getClosestTo: (pos: RoomPosition) => EnergyTargetFinder | null = (pos) => {
         return targets => {
             const result = pos.findClosestByPath<EnergyTarget>(targets)
-            if(!result) throw new Error("未找到最近的能量来源")
             return  result
         }
     }
@@ -62,7 +61,7 @@ export default class EnergyHelper {
      * @param finder 搜索方法，该方法接受房间里能量大于零的数组，并返回其中之一
      * @param filters 过滤方法，该方法接受房间里能量大于零的数组，并返回其中的一部分
      */
-    static getRoomEnergyTarget(room:Room,finder?:EnergyTargetFinder,...filters:EnergyTargetFilter[]):EnergyTarget{
+    static getRoomEnergyTarget(room:Room,finder:EnergyTargetFinder | null,...filters:EnergyTargetFilter[]):EnergyTarget | null{
         let allEnergyTargets = room._energyFilterObj
 
         if(!allEnergyTargets){

@@ -22,7 +22,7 @@
  * 能量搜索方法
  * 外部模块提供的搜索方法都应符合这个标准
  */
-type EnergyTargetFinder = (targets: EnergyTarget[]) => EnergyTarget
+type EnergyTargetFinder = (targets: EnergyTarget[]) => EnergyTarget | null
 type EnergyTargetFilter = (targets: EnergyTarget[]) => EnergyTarget[]
 
 interface Room {

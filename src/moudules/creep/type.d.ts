@@ -56,6 +56,7 @@ interface Creep{
     buildStructure(targetConstruction?: ConstructionSite): CreepActionReturnCode | ERR_NOT_ENOUGH_RESOURCES | ERR_RCL_NOT_ENOUGH | ERR_NOT_FOUND | ERR_RCL_NOT_ENOUGH
     backToGetEnergy():boolean
     steadyWall(): OK | ERR_NOT_FOUND
+    fillDefenseStructure():boolean
 }
 
 

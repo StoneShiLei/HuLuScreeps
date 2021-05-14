@@ -1,3 +1,4 @@
+import WhiteList from "moudules/console/whiteList"
 import BuildTask from "moudules/room/taskController/task/wokerTask/buildTask"
 import UpgradeTask from "moudules/room/taskController/task/wokerTask/upgradeTask"
 import Utils from "utils/utils"
@@ -90,6 +91,28 @@ export default class ControllerExtension extends StructureController {
     private decideUpgradeWhenRCL8(): void {
         // 限制只需要一个单位升级
         this.room.workController.updateTask(new UpgradeTask(5,1))
+    }
+
+    /**
+     * 检查敌人威胁
+     * 检查房间内所有敌人的身体部件情况确认是否可以造成威胁
+     *
+     * @returns 是否可以造成威胁（是否启用主动防御模式）
+     */
+    public checkEnemyThreat(): boolean {
+        // 这里并没有搜索 PC，因为 PC 不是敌人主力
+        const enemy = this.room._enemys || this.room.find(FIND_HOSTILE_CREEPS, { filter: WhiteList.whiteListFilter })
+        if (enemy.length <= 0) return false
+
+        // 如果来的都是入侵者的话，就算撑破天了也不管
+        if (!enemy.find(creep => creep.owner.username !== 'Invader')) return false
+
+        const bodyNum = enemy.map(creep => {
+            // 如果是 creep 则返回身体部件，如果不是则不参与验证
+            return creep instanceof Creep ? creep.body.length : 0
+        }).reduce((pre, cur) => pre + cur)
+        // 满配 creep 数量大于 1，就启动主动防御
+        return bodyNum > MAX_CREEP_SIZE
     }
 
 

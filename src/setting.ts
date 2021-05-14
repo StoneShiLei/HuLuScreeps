@@ -26,6 +26,9 @@ export const repairSetting = {
     focusTime: 100
 }
 
+// tower 将在几级之后参与刷墙
+export const TOWER_FILL_WALL_LEVEL = 6
+
 // 用于维持房间能量正常运转的重要角色
 export const importantRoles: AllRoles[] = [ 'harvester', 'transporter'] //, 'processor' ]
 

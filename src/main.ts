@@ -1,6 +1,7 @@
 
 import ConstructionController from "moudules/constructionController/constructionController";
 import mountCreep from "moudules/creep";
+import mountGlobal from "moudules/global/globalMont";
 import CreepNumberListener from "moudules/creep/creepNumberListener";
 import mountMouduleController, { mountRoom } from "moudules/room";
 import mountRoomPosition from "moudules/roomPosition";
@@ -14,6 +15,9 @@ mountRoom()
 mountRoomPosition()
 //挂载creep
 mountCreep()
+//挂载全局命令
+mountGlobal()
+
 //初始化建筑控制器
 ConstructionController.init()
 

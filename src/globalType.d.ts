@@ -6,6 +6,12 @@ declare module NodeJS {
     }
 }
 
+interface Memory{
+    whiteList?:{
+        [userName: string]: number
+    }
+}
+
 /**
  * 包含任意键值对的对象
  */

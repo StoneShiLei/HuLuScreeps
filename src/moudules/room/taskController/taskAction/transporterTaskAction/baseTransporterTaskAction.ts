@@ -33,7 +33,7 @@ export default abstract class BaseTransporterTaskAction<Task extends BaseTranspo
         //如果source不存在  则重新查找并缓存
         if(!resource){
             resource = EnergyHelper.getRoomEnergyTarget(this.creep.room,EnergyHelper.getClosestTo(this.creep.pos))
-            this.creep.memory.sourceId = resource.id
+            if(resource) this.creep.memory.sourceId = resource.id
         }
 
         if(!resource || (resource instanceof Structure && resource.store[RESOURCE_ENERGY] <= 0)

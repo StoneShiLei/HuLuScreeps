@@ -16,10 +16,12 @@ export default class ContructionSiteExtension extends ConstructionSite {
                 if(priority < 0) priority = 0
             }
 
-            //如果任务队列包含build任务且 优先级和此建筑的优先级一致  则跳过
-            if(this.room.workController.hasTask("build") &&  this.room.workController.tasks.find(t => t.taskType === "build" && t.priority == (priority + 5)) ) return
+            priority += 5
+            const buildTask = this.room.workController.tasks.find(t => t.taskType === "build")
+            //如果队列中没有buildTask 或 task的id是自己 或 buildTask的优先级高于自己的优先级
+            if(!buildTask || buildTask.id == priority ||buildTask.priority >= priority) return
 
-            this.room.workController.updateTask(new BuildTask(undefined,priority + 5,2),{dispath:true})
+            this.room.workController.updateTask(new BuildTask(this.id,priority + 5,2),{dispath:true})
 
         }
         else{
