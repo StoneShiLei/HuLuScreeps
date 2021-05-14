@@ -1,6 +1,7 @@
 import whitelist from 'moudules/console/whiteList'
 import Utils from 'utils/utils'
 import creepNum from 'moudules/console/creepNum'
+import util from 'moudules/console/util'
 
 // 全局拓展操作
 const extensions =  {
@@ -8,7 +9,8 @@ const extensions =  {
     get: Game.getObjectById,
     // 白名单
     whitelist,
-    creepNum
+    creepNum,
+    util,
 }
 
 // 挂载全局拓展

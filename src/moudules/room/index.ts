@@ -5,7 +5,7 @@ import RoomSpawnController from "./spawnController/roomSpawnController";
 import ContructionSiteExtension from "./structures/constructionSite/extension";
 import ContainerExtension from "./structures/container/extension";
 import ControllerExtension from "./structures/controller/extension";
-import TowerExtension from "./structures/tower/tower";
+import TowerExtension from "./structures/tower/extension";
 import TransportTaskController from "./taskController/controller/transportTaskController";
 import WorkTaskController from "./taskController/controller/workTaskController";
 
