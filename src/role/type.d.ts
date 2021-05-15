@@ -18,15 +18,16 @@ interface CreepMemory{
     working:boolean
 }
 
-type AllData = EmptyData | HarvesterData | TransporterData | WorkerData
+type AllData = EmptyData | HarvesterData | TransporterData | WorkerData | CenterData
 
 type AllRoles = BasisRoles
 
-type BasisRoles = Harvester | Transporter | Worker
+type BasisRoles = Harvester | Transporter | Worker | Center
 
 type Harvester = "harvester"
 type Transporter = "transporter"
 type Worker = "worker"
+type Center = "center"
 
 
 
@@ -38,6 +39,7 @@ interface CreepData{
     harvesterData?:HarvesterData
     transporterData?:TransporterData
     workerData?:WorkerData
+    centerData?:CenterData
 }
 
 interface EmptyData{}
@@ -68,4 +70,9 @@ interface TransporterData{
 interface WorkerData{
     //该 creep 的工作房间
     workRoom: string
+}
+
+interface CenterData {
+    x: number
+    y: number
 }

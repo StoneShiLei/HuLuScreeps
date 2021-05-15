@@ -1,4 +1,5 @@
 import Utils from "utils/utils";
+import RoomCenterController from "./centerController/roomCenterController";
 import SourceExtension from "./source/extension";
 import SpawnExtension from "./spawnController/extension";
 import RoomSpawnController from "./spawnController/roomSpawnController";
@@ -25,6 +26,7 @@ export default function mountMouduleController(){
         ['transportController',TransportTaskController],
         ['workController',WorkTaskController],
         ['spawnController',RoomSpawnController],
+        ['centerController',RoomCenterController]
     ]
 
     const controllerStorage:ControllerStorage = {}
@@ -72,5 +74,9 @@ export default function mountMouduleController(){
          * 孵化控制模块
          */
          spawnController: RoomSpawnController
+         /**
+          * 中央任务模块
+          */
+         centerController:RoomCenterController
     }
 }

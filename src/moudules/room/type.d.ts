@@ -1,6 +1,10 @@
 
  interface RoomMemory{
     /**
+     * 基地中心点坐标, [0] 为 x 坐标, [1] 为 y 坐标
+     */
+    center: [ number, number ]
+    /**
      * 当前被 repairer 或 tower 关注的墙
      */
     focusWall?: {
@@ -22,6 +26,7 @@ interface Room{
 }
 
 
-type MemoryKey = SpawnList
+type MemoryKey = SpawnList | CenterList
 
 type SpawnList = "spawnList"
+type CenterList = "centerList"

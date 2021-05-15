@@ -19,7 +19,7 @@ export default class RoomSpawnController extends RoomAccessor<SpawnTask[]>{
      * @param roomName 要管理的房间名
      */
     constructor(roomName:string){
-        super("roomSpawn",roomName,"spawnList",[])
+        super("SpawnController",roomName,"spawnList",[])
         this.release = new RoomCreepReleaseUtil(this)
     }
 

@@ -149,6 +149,7 @@ export default class ConstructionController{
      * 向队列里新增建造任务
      */
     static addConstructionSite(sites: ConstructionPos[]) {
+
         this.waitingConstruction.push(...sites)
         Game._needSaveConstructionData = true
     }

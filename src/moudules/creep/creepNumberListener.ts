@@ -1,3 +1,4 @@
+import SpawnTask from "moudules/room/spawnController/spawnTask"
 import { creepRoleConfig } from "role"
 import Utils from "utils/utils"
 
@@ -26,7 +27,7 @@ export default class CreepNumberListener{
     }
 
     static handleNotExistCreep(creepName: string, creepMemory: CreepMemory) {
-        const { spawnRoom: spawnRoomName, data, role, cantRespawn, taskID } = creepMemory ///?
+        const { spawnRoom: spawnRoomName, data, role, cantRespawn, taskID } = creepMemory
 
         // 如果有 taskKey，说明还在做任务，去访问对应的任务管理器把自己注销一下
         if (taskID) this.removeSelfFromTask(creepName, role, data)
@@ -56,7 +57,7 @@ export default class CreepNumberListener{
         }
 
         // 加入生成，加入成功的话删除过期内存
-        const result = spawnRoom.spawnController.addTask({ name: creepName, role, data })
+        const result = spawnRoom.spawnController.addTask(new SpawnTask(creepName,role,data))
 
         if (result === ERR_NAME_EXISTS) Utils.log(`死亡 ${creepName} 孵化任务已存在`, [ 'creepController' ])
         delete Memory.creeps[creepName]

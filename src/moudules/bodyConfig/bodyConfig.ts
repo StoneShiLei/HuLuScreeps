@@ -47,7 +47,7 @@ export default class BodyAutoConfigUtil {
          * 中央物流管理单位
          * 负责转移中央物流的 creep（下面其实前 4 级都用不到，因为中央物流管理员只会在 5 级有了 centerLink 之后才会孵化）
          */
-        processor: BodyAutoConfigUtil.getBodyConfig(
+        center: BodyAutoConfigUtil.getBodyConfig(
             { [CARRY]: 2, [MOVE]: 1 },
             { [CARRY]: 3, [MOVE]: 1 },
             { [CARRY]: 5, [MOVE]: 1 },

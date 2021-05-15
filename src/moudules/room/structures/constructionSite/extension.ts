@@ -1,3 +1,4 @@
+import ConstructionController from "moudules/constructionController/constructionController";
 import BuildTask from "moudules/room/taskController/task/wokerTask/buildTask";
 import { BUILD_PRIORITY } from "setting";
 
@@ -17,15 +18,17 @@ export default class ContructionSiteExtension extends ConstructionSite {
             }
 
             priority += 5
-            const buildTask = this.room.workController.tasks.find(t => t.taskType === "build")
-            //如果队列中没有buildTask 或 task的id是自己 或 buildTask的优先级高于自己的优先级
-            if(!buildTask || buildTask.id == priority ||buildTask.priority >= priority) return
+            const buildTask = this.room.workController.tasks.find(t => t.taskType === "build") as BuildTask
+            //如果队列中有buildTask 且 task的id是自己   或   buildTask的priority 大于自己的prioryity  则不发布任务
+            if((buildTask && buildTask.targetId == this.id) || (buildTask && buildTask.priority > priority)) return
 
-            this.room.workController.updateTask(new BuildTask(this.id,priority + 5,2),{dispath:true})
+            this.room.workController.updateTask(new BuildTask(this.id,priority),{dispath:true})
 
         }
         else{
             throw new Error("非自己房间")
         }
+
+        // ConstructionController.addConstructionSite([{ pos: this.pos, type: this.structureType }])
     }
 }

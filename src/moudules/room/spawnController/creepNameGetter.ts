@@ -6,7 +6,7 @@
     static harvester = (roomName: string, index: number) => `${roomName} harvester${index}`
     static worker = (roomName: string, index: number) => `${roomName} worker${index}`
     static transporter = (roomName: string, index: number) => `${roomName} transporter${index}`
-    // static processor = (roomName: string) => `${roomName} processor`
+    static center = (roomName: string) => `${roomName} center`
     // static claimer = (targetRoomName: string) => `${targetRoomName} claimer`
     // static reserver = (targetRoomName: string) => `${targetRoomName} reserver${Game.time}`
     // static signer = (roomName: string) => `${roomName} signer`

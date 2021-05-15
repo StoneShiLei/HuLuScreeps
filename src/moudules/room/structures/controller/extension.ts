@@ -11,7 +11,8 @@ export default class ControllerExtension extends StructureController {
         // 解除这两行的注释以显示队列信息
         this.room.workController.draw(1, 3)
         this.room.transportController.draw(1, 13)
-        this.room.spawnController.draw(1,23)
+        this.room.centerController.draw(1,23)
+        this.room.spawnController.draw(1,33)
 
         // if(this.room.memory.transporterNum < 3)
         // this.room.spawnController.release.changeBaseUnit("transporter",3 - this.room.memory.transporterNum )

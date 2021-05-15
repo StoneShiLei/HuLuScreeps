@@ -103,4 +103,20 @@ export default class RoomCreepReleaseUtil{
         // 把新配置覆写保存进内存
         this.spawner.room.memory.baseUnitLimit = JSON.stringify(_.defaults({ [type]: realLimit }, existLimit))
     }
+
+    /**
+     * 发布中央运输单位
+     */
+    public center(): OK | ERR_NOT_FOUND {
+        const { room } = this.spawner
+        if (!room.memory.center) return ERR_NOT_FOUND
+
+        const [ x, y ] = room.memory.center
+        this.spawner.addTask(new SpawnTask(
+            CreepNameGetter.center(room.name),
+            'center',
+            {centerData:{x:x,y:y}}))
+
+        return OK
+    }
 }

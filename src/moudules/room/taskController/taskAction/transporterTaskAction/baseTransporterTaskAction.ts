@@ -56,6 +56,7 @@ export default abstract class BaseTransporterTaskAction<Task extends BaseTranspo
 export class NoTaskAction extends BaseTransporterTaskAction<BaseTransporterTask>{
     getResource(): boolean {
         this.creep.say('💤')
+        this.creep.goTo(new RoomPosition(25, 25, this.creep.room.name))
         return false
     }
     workWithTarget(): boolean {

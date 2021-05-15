@@ -59,7 +59,6 @@ export default abstract class BaseWorkerTaskAction<Task extends BaseWorkerTask> 
 export class NoTaskAction extends BaseWorkerTaskAction<BaseWorkerTask>{
     getResource(): boolean {
         this.creep.say('💤')
-        this.creep.goTo(new RoomPosition(25, 25, this.creep.room.name))
         return false
     }
     workWithTarget(): boolean {
