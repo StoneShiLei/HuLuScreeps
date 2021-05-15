@@ -1,13 +1,3 @@
-
-/**
- * 需要自动规划身体类型的角色
- */
- type BodyAutoConfigConstant =
- 'harvester' |
- 'worker' |
- 'transporter' |
- 'processor'
-
 /**
  * 简写版本的 bodyPart[]，格式如下：
  *
@@ -32,12 +22,4 @@ interface BodySet {
  */
  type BodyConfig = {
     [energyLevel in "300" | "550" | "800" | "1300" | "1800" | "2300" | "5600" | "10000" ]: BodyPartConstant[]
-}
-
-/**
- * 身体配置项类别
- * 包含了所有角色类型的身体配置
- */
- type BodyConfigs = {
-    [type in BodyAutoConfigConstant]: BodyConfig
 }

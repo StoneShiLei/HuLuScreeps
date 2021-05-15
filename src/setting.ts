@@ -30,7 +30,17 @@ export const repairSetting = {
 export const TOWER_FILL_WALL_LEVEL = 6
 
 // 用于维持房间能量正常运转的重要角色
-export const importantRoles: AllRoles[] = [ 'harvester', 'transporter'] //, 'processor' ]
+export const importantRoles: AllRoles[] = [ 'harvester', 'transporter', 'center' ]
+
+/**
+ * storage 填充到其他建筑的能量填充设置的下限默认值
+ */
+ export const DEFAULT_ENERGY_KEEP_LIMIT = 900000
+
+ /**
+  * storage 填充到其他建筑的能量填充设置的填充量默认值
+  */
+ export const DEFAULT_ENERGY_KEEP_AMOUNT = 50000
 
 // creep 的默认内存
 export const creepDefaultMemory: CreepMemory = {

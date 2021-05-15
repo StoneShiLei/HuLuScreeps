@@ -7,7 +7,6 @@ export default class CreepNum {
         if(!room) throw new Error("房间不存在")
         const spawnController = room.spawnController
         if(!spawnController) throw new Error("spawnController不存在")
-        spawnController.release.changeBaseUnit(role,num)
         return spawnController.release.changeBaseUnit(role,num)
     }
 }

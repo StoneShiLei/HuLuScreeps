@@ -1,5 +1,6 @@
 import { filter } from "lodash"
 import ConstructionController from "moudules/constructionController/constructionController"
+import MoveUtil from "moudules/move/moveUtil"
 import FillWallTask from "moudules/room/taskController/task/wokerTask/fillWallTask"
 import { creepRoleConfig } from "role"
 import { minWallHits, repairSetting } from "setting"
@@ -47,11 +48,11 @@ export default class CreepExtension extends Creep {
     }
 
     public goTo(target:RoomPosition,opt?:GoToOpt):ScreepsReturnCode{
-        // if(!this.memory.pathCache || Game.time % 5){
-
-        // }
-        this.memory.pathCache = this.room.findPath(this.pos,target,opt)
-        const result = this.moveByPath(this.memory.pathCache)
+        let path:RoomPosition[] | PathStep[] | undefined = MoveUtil.findPath(this,target,opt)
+        if(!path) {
+            path = this.room.findPath(this.pos,target,opt)
+        }
+        const result = this.moveByPath(path)
         return result
     }
 
@@ -226,7 +227,6 @@ export default class CreepExtension extends Creep {
             if(selfKeepTarget) return selfKeepTarget
             else{
                 const structure = ConstructionController.buildCompleteSite[this.memory.constructionSiteId || ""]
-
                 // 如果刚修好的是墙的话就记住该墙的 id，然后把血量刷高一点）
                 if (structure && (
                     structure.structureType === STRUCTURE_WALL ||

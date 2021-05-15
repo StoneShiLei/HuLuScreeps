@@ -28,7 +28,7 @@ export default class RoomCenterController extends RoomAccessor<CenterTask[]>{
         for(const task of data){
             logs.push(`${task.submit}: [${task.source}--${task.resourceType}:${task.amount}--> ${task.target}]`)
         }
-        const info = [`Spawn队列 ${logs.join(', ')}`]
+        const info = [`Center队列 ${logs.join(', ')}`]
 
         const room = Game.rooms[this.roomName]
         const style: TextStyle = { align: 'left', opacity: 0.5 }

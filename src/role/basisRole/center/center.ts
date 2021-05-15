@@ -62,7 +62,7 @@ import Utils from "utils/utils"
         const amount: number = creep.store.getUsedCapacity(task.resourceType)
 
         // 通过房间基础服务获取对应的建筑
-        const structure:AnyStructure |null = RoomCenterController.GetCenterStructure(creep.room,task.source)
+        const structure:AnyStructure |null = RoomCenterController.GetCenterStructure(creep.room,task.target)
         if (!structure) {
             creep.room.centerController.deleteCurrentTask()
             return false

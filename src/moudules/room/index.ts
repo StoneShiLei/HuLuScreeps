@@ -6,6 +6,8 @@ import RoomSpawnController from "./spawnController/roomSpawnController";
 import ContructionSiteExtension from "./structures/constructionSite/extension";
 import ContainerExtension from "./structures/container/extension";
 import ControllerExtension from "./structures/controller/extension";
+import LinkExtension  from "./structures/link/extension";
+import StorageExtension from "./structures/storage/extension";
 import TowerExtension from "./structures/tower/tower";
 import TransportTaskController from "./taskController/controller/transportTaskController";
 import WorkTaskController from "./taskController/controller/workTaskController";
@@ -19,6 +21,8 @@ export const mountRoom = function() {
     Utils.assignPrototype(StructureController,ControllerExtension)
     Utils.assignPrototype(ConstructionSite,ContructionSiteExtension)
     Utils.assignPrototype(StructureTower,TowerExtension)
+    Utils.assignPrototype(StructureStorage,StorageExtension)
+    Utils.assignPrototype(StructureLink,LinkExtension)
 }
 
 export default function mountMouduleController(){
