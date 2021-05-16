@@ -81,7 +81,7 @@ export default class MoveUtil{
         const range = gotoOpt.range === undefined ? 1 : gotoOpt.range
 
         const result = PathFinder.search(creep.pos,{pos:target,range},{maxOps:4000,roomCallback:roomName =>{
-            // 强调了不许走就不走
+            // 绕过黑名单
             if (Memory.bypassRooms && Memory.bypassRooms.includes(roomName)) return false
             return true
         }})

@@ -7,6 +7,7 @@ import RoomSpawnController from "./spawnController/roomSpawnController";
 import ContructionSiteExtension from "./structures/constructionSite/extension";
 import ContainerExtension from "./structures/container/extension";
 import ControllerExtension from "./structures/controller/extension";
+import ExtractorExtension from "./structures/extractor/extension";
 import LinkExtension  from "./structures/link/extension";
 import StorageExtension from "./structures/storage/extension";
 import TowerExtension from "./structures/tower/tower";
@@ -25,6 +26,7 @@ export const mountRoom = function() {
     Utils.assignPrototype(StructureTower,TowerExtension)
     Utils.assignPrototype(StructureStorage,StorageExtension)
     Utils.assignPrototype(StructureLink,LinkExtension)
+    Utils.assignPrototype(StructureExtractor,ExtractorExtension)
 }
 
 export default function mountMouduleController(){

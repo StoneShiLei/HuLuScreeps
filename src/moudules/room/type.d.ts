@@ -19,6 +19,7 @@
 
 interface Room{
     sources?:Source[] //room的source列表 暂时由spawn维护
+    mineral?: Mineral //由矿工维护
     /**
      * 焦点墙，维修单位总是倾向于优先修复该墙体
      */

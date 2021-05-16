@@ -16,6 +16,7 @@ type AllWorkerTaskType =
     BuildTaskType |
     RepairTaskType |
     FillWallTaskType |
+    MineTaskType |
     NoTaskType
 
 //全部任务定义
@@ -31,6 +32,7 @@ type BuildContainerTaskType = "buildContainer"
 type BuildTaskType = "build"
 type RepairTaskType = "repair"
 type FillWallTaskType = "fillWall"
+type MineTaskType = "mine"
 
 /**
  * 任务接口

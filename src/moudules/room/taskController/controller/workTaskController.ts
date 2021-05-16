@@ -6,6 +6,7 @@ import BuildContainerTaskAction from "../taskAction/wokerTaskAction/buildContain
 import UpgradeTaskAction from "../taskAction/wokerTaskAction/upgradeTaskAction";
 import RepairTaskAction from "../taskAction/wokerTaskAction/repairTaskAction";
 import FillWallTaskAction from "../taskAction/wokerTaskAction/fillWallTaskAction";
+import MineTaskAction from "../taskAction/wokerTaskAction/mineTaskAction";
 
 type AllWorkAction = {[taskType in AllWorkerTaskType]: BaseWorkerTaskAction<BaseWorkerTask>}
 
@@ -16,7 +17,8 @@ export default class WorkTaskController extends BaseTaskController<AllWorkerTask
         "buildContainer":new BuildContainerTaskAction(),
         "upgrade":new UpgradeTaskAction(),
         "repair":new RepairTaskAction(),
-        "fillWall":new FillWallTaskAction()
+        "fillWall":new FillWallTaskAction(),
+        "mine":new MineTaskAction()
     }
 
     constructor(roomName:string){
