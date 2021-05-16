@@ -97,7 +97,6 @@ export default class EnergyHelper {
 
         // 遍历所有过滤器
         const filteredTargets = filters.reduce((targets,filter) => filter(targets),allEnergyTargets)
-        console.log(JSON.stringify(filteredTargets.find(s => s.id === "609c060bf4e81d001d6431d3")))
         //设置搜索方法并执行搜索
         const targetFinder:EnergyTargetFinder = finder || this.getMax
         return targetFinder(filteredTargets)
