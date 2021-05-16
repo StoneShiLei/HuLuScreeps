@@ -17,7 +17,7 @@ import UpgradeTask from "moudules/room/taskController/task/wokerTask/upgradeTask
          * 如果是在自己房间里就触发新的 creep 和任务发布
          * 更新家里的搬运工数量，几个 container 就发布其数量 * 4
          */
-        this.room.spawnController.release.changeBaseUnit('worker', 4)
+        this.room.spawnController.release.changeBaseUnit('worker', 2)
         this.room.workController.updateTask(new UpgradeTask(5))
         return true
     }
