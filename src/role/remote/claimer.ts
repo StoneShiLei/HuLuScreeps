@@ -12,7 +12,7 @@ export default class ClaimerConfig implements RoleConfig{
         const targetRoomName = creep.memory.data.claimerData.targetRoomName
         // 只要进入房间则准备结束
         if(creep.room.name !== targetRoomName){
-            creep.goTo(new RoomPosition(25,25,targetRoomName))
+            creep.goFar(new RoomPosition(25,25,targetRoomName))
             return false
         }
 

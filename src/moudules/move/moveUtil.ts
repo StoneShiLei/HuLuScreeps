@@ -7,8 +7,15 @@ export default class MoveUtil{
     static findPath(creep:Creep | PowerCreep,target:RoomPosition,gotoOpt:GoToOpt = {range:0}):RoomPosition[] | undefined{
         const range = gotoOpt.range === undefined ? 1 : gotoOpt.range
         const result = PathFinder.search(creep.pos,{pos:target,range},{maxOps:4000,roomCallback:roomName =>{
+
+            // 强调了不许走就不走
+            if (Memory.bypassRooms && Memory.bypassRooms.includes(roomName)) return false
+
             const room = Game.rooms[roomName]
+            // 房间没有视野
             if(!room) return false
+
+            // 尝试从缓存中读取，没有缓存就进行查找
             let costs =  (roomName in this.costCache) ? this.costCache[roomName].clone() : undefined
             if(!costs){
                 costs = new PathFinder.CostMatrix
@@ -66,6 +73,18 @@ export default class MoveUtil{
         if (result.path.length <= 0) return undefined
 
         // 根据玩家指定的重用距离返回缓存
+        return result.path
+    }
+
+
+    static findSafePath(creep:Creep | PowerCreep,target:RoomPosition,gotoOpt:GoToOpt = {range:0}):RoomPosition[] {
+        const range = gotoOpt.range === undefined ? 1 : gotoOpt.range
+
+        const result = PathFinder.search(creep.pos,{pos:target,range},{maxOps:4000,roomCallback:roomName =>{
+            // 强调了不许走就不走
+            if (Memory.bypassRooms && Memory.bypassRooms.includes(roomName)) return false
+            return true
+        }})
         return result.path
     }
 }

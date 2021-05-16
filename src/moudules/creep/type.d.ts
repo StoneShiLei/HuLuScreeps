@@ -50,6 +50,8 @@ interface CreepMemory{
 interface Creep{
     onWork():void
     goTo(target:RoomPosition,opt?:GoToOpt):ScreepsReturnCode
+    goToTest(target:RoomPosition,opt?:GoToOpt):ScreepsReturnCode
+    goFar(target:RoomPosition,opt?:GoToOpt):ScreepsReturnCode
     getEngryFrom(target: AllEnergySource): ScreepsReturnCode
     transferTo(target:  AnyCreep | Structure, RESOURCE: ResourceConstant, moveOpt?: MoveToOpts): ScreepsReturnCode
     upgradeRoom(roomName: string): ScreepsReturnCode

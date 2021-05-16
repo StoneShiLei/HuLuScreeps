@@ -294,6 +294,7 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
      */
     private init():void{
         const roomMemory = Memory.rooms[this.roomName]
+        if(!roomMemory) Memory.rooms[this.roomName] = {}
         if(!roomMemory.tasks) roomMemory.tasks = {[this.TASK_SAVE_KEY]:'[]'}
         if(!roomMemory.creeps) roomMemory.creeps = {[this.CREEP_SAVE_KEY]:'{}'}
         const tasksJson = roomMemory.tasks[this.TASK_SAVE_KEY]
@@ -308,11 +309,13 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
     private save():void{
         if(!Memory.rooms) Memory.rooms = {}
         if(!Memory.rooms[this.roomName]){
+            Memory.rooms[this.roomName] = {}
             Memory.rooms[this.roomName].tasks = {}
             Memory.rooms[this.roomName].creeps = {}
         }
 
         const roomMemory = Memory.rooms[this.roomName]
+        if(!roomMemory || !roomMemory.tasks || !roomMemory.creeps) return
         if(this.tasks.length <= 0) delete roomMemory.tasks[this.TASK_SAVE_KEY]
         else roomMemory.tasks[this.TASK_SAVE_KEY] = JSON.stringify(this.tasks.map(task =>{return {...task,workUnit:0}}))
         if(Object.keys(this.creeps).length <= 0) delete roomMemory.creeps[this.CREEP_SAVE_KEY]

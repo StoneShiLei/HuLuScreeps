@@ -1,3 +1,4 @@
+import { filter } from "lodash"
 import BodyAutoConfigUtil from "moudules/bodyConfig/bodyConfig"
 import EnergyHelper from "moudules/energyHelper/energyHelper"
 import Utils from "utils/utils"
@@ -23,7 +24,7 @@ export default class BuildSupporterConfig implements RoleConfig{
 
         // 只要进入房间则准备结束
         if (creep.room.name !== targetRoomName) {
-            creep.goTo(new RoomPosition(25, 25, targetRoomName))
+            creep.goFar(new RoomPosition(25, 25, targetRoomName))
             return false
         }
         else {
@@ -32,7 +33,6 @@ export default class BuildSupporterConfig implements RoleConfig{
     }
 
     getResource?(creep:Creep):boolean{
-
         if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return true
 
         let resource:AllEnergySource | null = null
@@ -40,7 +40,7 @@ export default class BuildSupporterConfig implements RoleConfig{
         if(!creep.memory.sourceId){
             resource = EnergyHelper.getRoomEnergyTarget(creep.room)
             // 没有有效的能量来源建筑就去找能用的 source
-            if(!resource) resource = creep.room.find(FIND_SOURCES).find(s => s.canUse()) ?? null
+            if(!resource) resource = creep.room.find(FIND_SOURCES,{filter:s => s.canUse()})[0]
             if(!resource){
                 creep.say('no energy!')
                 return false
@@ -49,15 +49,16 @@ export default class BuildSupporterConfig implements RoleConfig{
             creep.memory.sourceId = resource.id
         }
         else resource = Game.getObjectById(creep.memory.sourceId)
-
         // 之前的来源建筑里能量不够了就更新来源
         if(!resource || (resource instanceof Structure && resource.store[RESOURCE_ENERGY] < 300 )|| (resource instanceof Source && resource.energy === 0)){
             delete creep.memory.sourceId
         }
+
         if(!resource){
             creep.say('no energy!')
             return false
         }
+
 
         creep.getEngryFrom(resource)
 

@@ -16,13 +16,16 @@ export default class EnergyHelper {
     /**
      * 查找器 - 找到最多的能量来源
      */
-    static getMax: EnergyTargetFinder = targets => _.max(targets, EnergyHelper.getEnergyAmount)
+    static getMax: EnergyTargetFinder = targets => {
+        if(targets.length == 0) return null
+        return _.max(targets, EnergyHelper.getEnergyAmount)
+    }
     /**
      * 生成查找器 - 找到离目标位置最近的能量来源
      *
      * @param pos 目标位置
      */
-    static getClosestTo: (pos: RoomPosition) => EnergyTargetFinder | null = (pos) => {
+    static getClosestTo: (pos: RoomPosition) => EnergyTargetFinder = (pos) => {
         return targets => {
             const result = pos.findClosestByPath<EnergyTarget>(targets)
             return  result

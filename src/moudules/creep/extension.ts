@@ -49,27 +49,25 @@ export default class CreepExtension extends Creep {
     }
 
     public goTo(target:RoomPosition,opt:GoToOpt = {range:0}):ScreepsReturnCode{
-        // let path:RoomPosition[] | undefined = undefined
-        // let result:ScreepsReturnCode = OK
-
-        // // if(this.memory.pathCache)
-        // //     console.log(this.memory.pathCache[this.memory.pathCache.length - 1])
-
-        // if(Game.time % 5 || !this.memory.pathCache){
-        //     path = MoveUtil.findPath(this,target,opt)
-        //     if(!path){
-        //         path = PathFinder.search(this.pos,{pos:target,range:opt.range}).path
-        //     }
-
-        //     if(!path){
-
-        //     }
-
-        //     this.memory.pathCache = path
-        // }
-        // if(!path){ console.log(111);return this.moveTo(target,opt) }
-        // return this.moveByPath(path)
         return this.moveTo(target,opt)
+    }
+
+    public goToTest(target:RoomPosition,opt:GoToOpt = {range:0}):ScreepsReturnCode{
+        let path:RoomPosition[] | undefined = undefined
+        path = MoveUtil.findPath(this,target,opt)
+        if(!path) return ERR_NOT_FOUND
+        this.memory.pathCache = path
+        return this.moveByPath(this.memory.pathCache)
+    }
+
+    public goFar(target:RoomPosition,opt:GoToOpt = {range:0}):ScreepsReturnCode{
+        let path:RoomPosition[] | undefined = undefined
+        path = MoveUtil.findSafePath(this,target,opt)
+        if(!path) return ERR_NOT_FOUND
+        this.memory.pathCache = path
+        const result = this.moveByPath(path)
+        // console.log(result)
+        return result
     }
 
     /**

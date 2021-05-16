@@ -3,7 +3,7 @@
     /**
      * 基地中心点坐标, [0] 为 x 坐标, [1] 为 y 坐标
      */
-    center: [ number, number ]
+    center?: [ number, number ]
     /**
      * 当前被 repairer 或 tower 关注的墙
      */
