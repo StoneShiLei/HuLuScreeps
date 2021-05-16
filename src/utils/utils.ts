@@ -118,18 +118,23 @@ export default class Utils{
         return OK
     }
 
+
     /**
-     * 获取uuid
-     * @returns
+     * 远程支援单位的 isNeed 阶段
+     *
+     * @param source 来源房间
+     * @param target 被支援的房间
+     * @param customCondition 自定义判断条件
      */
-    static generateUUID() {
-        let d = new Date().getTime();
-        let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-          let r = (d + Math.random()*16)%16 | 0;
-          d = Math.floor(d/16);
-          return (c=='x' ? r : (r&0x3|0x8)).toString(16);
-        });
-        return uuid;
-    };
+    static supporterIsNeed(source:Room,target:Room,condition:()=>boolean):boolean{
+    // 源房间没视野就默认孵化
+    if (!target) return true
+
+     // 源房间还不够 7 级并且目标房间的 spawn 已经造好了
+    if (condition() || (source.controller && source.controller.level < 7 &&
+        target.find<StructureSpawn>(FIND_STRUCTURES,{filter:s => s.structureType === STRUCTURE_SPAWN}).length > 0)) return false
+
+    return true
+    }
 
 }

@@ -1,5 +1,6 @@
 import Utils from "utils/utils";
 import RoomCenterController from "./centerController/roomCenterController";
+import RoomExtension from "./extension";
 import SourceExtension from "./source/extension";
 import SpawnExtension from "./spawnController/extension";
 import RoomSpawnController from "./spawnController/roomSpawnController";
@@ -15,6 +16,7 @@ import WorkTaskController from "./taskController/controller/workTaskController";
 
 
 export const mountRoom = function() {
+    Utils.assignPrototype(Room,RoomExtension)
     Utils.assignPrototype(Source,SourceExtension)
     Utils.assignPrototype(StructureSpawn,SpawnExtension)
     Utils.assignPrototype(StructureContainer,ContainerExtension)

@@ -19,14 +19,14 @@ export default class ContructionSiteExtension extends ConstructionSite {
 
             priority += 5
             const buildTask = this.room.workController.tasks.find(t => t.taskType === "build") as BuildTask
-            //如果队列中有buildTask 且 task的id是自己   或   buildTask的priority 大于自己的prioryity  则不发布任务
-            if((buildTask && buildTask.targetId == this.id) || (buildTask && buildTask.priority > priority)) return
-
+            //如果队列中有buildTask 且 task的id是自己   或   buildTask的priority 大于自己的prioryity  则不发布任务  或  buildTask id不是自己 且 优先级相等
+            if((buildTask && buildTask.targetId == this.id) || (buildTask && buildTask.priority >= priority)) return
             this.room.workController.updateTask(new BuildTask(this.id,priority),{dispath:true})
 
         }
         else{
-            throw new Error("非自己房间")
+            // throw new Error("非自己房间")
+            console.log("非自己房间")
         }
 
         // ConstructionController.addConstructionSite([{ pos: this.pos, type: this.structureType }])

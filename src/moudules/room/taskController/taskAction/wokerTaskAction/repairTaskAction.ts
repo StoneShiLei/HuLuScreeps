@@ -43,7 +43,7 @@ export default class RepairTaskAction extends BaseWorkerTaskAction<RepairTask> {
         if(result === ERR_NOT_IN_RANGE) this.creep.goTo(target.pos,{range:2})
         else if(result === ERR_NOT_ENOUGH_ENERGY) return this.creep.backToGetEnergy()
         else if(result !== OK){
-            this.creep.say(`给我修傻了${result}`)
+            this.creep.say(`repair ${result}`)
             Utils.log(`维修任务异常，repair 返回值: ${result}`)
         }
 

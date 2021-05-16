@@ -197,7 +197,7 @@ export default abstract class BaseTaskController<TaskType extends AllTaskType,Ta
     /**
      * 为全部可用creep分配任务
      */
-    private distributionTask(){
+    public distributionTask(){
         this.tasks = _.sortBy(this.tasks,task=> -task.priority)
 
         // 获取所有可工作的 creep，并解除与对应工作任务的绑定

@@ -4,8 +4,7 @@ import RoomCenterController from "moudules/room/centerController/roomCenterContr
 import Utils from "utils/utils"
 
 /**
- * 工人，运营单位
- * 负责采集能量、升级、维修、建造等消耗能量的工作
+ * 中央运输
  */
  export default class CenterConfig implements RoleConfig{
 
@@ -81,11 +80,12 @@ import Utils from "utils/utils"
         }
         // 资源不足就返回 source 阶段
         else if (result === ERR_NOT_ENOUGH_RESOURCES) {
-            creep.say(`取出资源`)
+            creep.say(`取出资源 ${result}`)
             return true
         }
         else {
-            creep.say(`存入 ${result}`)
+            creep.say(`transferTo ${result}`)
+            Utils.log(`center异常，transferTo 返回值: ${result}`)
             creep.room.centerController.hangTask()
         }
 

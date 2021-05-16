@@ -4,7 +4,7 @@ export default class MoveUtil{
 
     static costCache:{[roomName:string]:CostMatrix} = {}
 
-    static findPath(creep:Creep | PowerCreep,target:RoomPosition,gotoOpt:GoToOpt = {}):RoomPosition[] | undefined{
+    static findPath(creep:Creep | PowerCreep,target:RoomPosition,gotoOpt:GoToOpt = {range:0}):RoomPosition[] | undefined{
         const range = gotoOpt.range === undefined ? 1 : gotoOpt.range
         const result = PathFinder.search(creep.pos,{pos:target,range},{maxOps:4000,roomCallback:roomName =>{
             const room = Game.rooms[roomName]

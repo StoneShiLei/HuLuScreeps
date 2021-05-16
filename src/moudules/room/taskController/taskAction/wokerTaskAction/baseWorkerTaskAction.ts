@@ -37,7 +37,7 @@ export default abstract class BaseWorkerTaskAction<Task extends BaseWorkerTask> 
 
         //还是获取不到resource
         if(!resource){
-            this.creep.say('没能量了，歇会')
+            this.creep.say('no energy!')
             return false
         }
 

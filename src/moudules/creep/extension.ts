@@ -13,7 +13,8 @@ export default class CreepExtension extends Creep {
     public onWork(): void{
         // 检查 creep 内存中的角色是否存在
         if(!(this.memory.role in creepRoleConfig)){
-            this.say('我没角色？')
+            this.say('no role!')
+            return
         }
 
         if(this.spawning) return
@@ -47,13 +48,28 @@ export default class CreepExtension extends Creep {
         if(stateChange) this.memory.working = !this.memory.working
     }
 
-    public goTo(target:RoomPosition,opt?:GoToOpt):ScreepsReturnCode{
-        let path:RoomPosition[] | PathStep[] | undefined = MoveUtil.findPath(this,target,opt)
-        if(!path) {
-            path = this.room.findPath(this.pos,target,opt)
-        }
-        const result = this.moveByPath(path)
-        return result
+    public goTo(target:RoomPosition,opt:GoToOpt = {range:0}):ScreepsReturnCode{
+        // let path:RoomPosition[] | undefined = undefined
+        // let result:ScreepsReturnCode = OK
+
+        // // if(this.memory.pathCache)
+        // //     console.log(this.memory.pathCache[this.memory.pathCache.length - 1])
+
+        // if(Game.time % 5 || !this.memory.pathCache){
+        //     path = MoveUtil.findPath(this,target,opt)
+        //     if(!path){
+        //         path = PathFinder.search(this.pos,{pos:target,range:opt.range}).path
+        //     }
+
+        //     if(!path){
+
+        //     }
+
+        //     this.memory.pathCache = path
+        // }
+        // if(!path){ console.log(111);return this.moveTo(target,opt) }
+        // return this.moveByPath(path)
+        return this.moveTo(target,opt)
     }
 
     /**
@@ -97,7 +113,7 @@ export default class CreepExtension extends Creep {
      * @param target 要转移到的目标
      * @param RESOURCE 要转移的资源类型
      */
-    public transferTo(target: AnyCreep | Structure, RESOURCE: ResourceConstant, moveOpt: GoToOpt = {}): ScreepsReturnCode {
+    public transferTo(target: AnyCreep | Structure, RESOURCE: ResourceConstant, moveOpt: GoToOpt = {range:0}): ScreepsReturnCode {
         this.goTo(target.pos, moveOpt)
         return this.transfer(target, RESOURCE)
     }

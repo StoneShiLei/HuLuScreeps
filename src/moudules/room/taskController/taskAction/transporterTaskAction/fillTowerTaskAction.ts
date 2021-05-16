@@ -1,4 +1,5 @@
 
+import Utils from "utils/utils";
 import FillTowerTask from "../../task/transporterTask/fillTowerTask";
 import BaseTransporterTaskAction from "./baseTransporterTaskAction";
 
@@ -54,7 +55,10 @@ export default class FillTowerTaskAction extends BaseTransporterTaskAction<FillT
 
         // 有的话就填充能量
         const result = this.creep.transferTo(target, RESOURCE_ENERGY)
-        if (result != OK && result != ERR_NOT_IN_RANGE) this.creep.say(`填充Tower ${result}`)
+        if (result != OK && result != ERR_NOT_IN_RANGE){
+             this.creep.say(`fillTower ${result}`)
+            Utils.log(`填塔任务异常，transferTo 返回值: ${result}`)
+        }
         return false
     }
 }

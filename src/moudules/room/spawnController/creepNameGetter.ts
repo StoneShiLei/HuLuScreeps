@@ -7,11 +7,11 @@
     static worker = (roomName: string, index: number) => `${roomName} worker${index}`
     static transporter = (roomName: string, index: number) => `${roomName} transporter${index}`
     static center = (roomName: string) => `${roomName} center`
-    // static claimer = (targetRoomName: string) => `${targetRoomName} claimer`
-    // static reserver = (targetRoomName: string) => `${targetRoomName} reserver${Game.time}`
-    // static signer = (roomName: string) => `${roomName} signer`
-    // static remoteBuilder = (remoteRoomName: string) => `${remoteRoomName} RemoteBuilder`
-    // static remoteUpgrader = (remoteRoomName: string) => `${remoteRoomName} RemoteUpgrader`
+    static claimer = (targetRoomName: string) => `${targetRoomName} claimer`
+    static reserver = (targetRoomName: string) => `${targetRoomName} reserver${Game.time}`
+    static signer = (roomName: string) => `${roomName} signer`
+    static buildeSupporter = (remoteRoomName: string) => `${remoteRoomName} buildeSupporter`
+    static upgradeSupporter = (remoteRoomName: string) => `${remoteRoomName} upgradeSupporter`
     // static remoteHarvester = (remoteRoomName: string, index: number) => `${remoteRoomName} remoteHarvester${index}`
     // static depositHarvester = (flagName: string) => `${flagName} depoHarvester`
     // static pbAttacker = (flagName: string, index: number) => `${flagName} attacker${index}`

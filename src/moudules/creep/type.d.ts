@@ -42,7 +42,7 @@ interface CreepMemory{
     /**
      * 缓存路径
      */
-    pathCache:PathStep[]
+    pathCache?: RoomPosition[]
 }
 
 
@@ -61,5 +61,5 @@ interface Creep{
 
 
 interface GoToOpt{
-    range?:number
+    range:number
 }

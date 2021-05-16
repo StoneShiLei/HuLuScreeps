@@ -66,7 +66,7 @@ export default class LinkExtension extends StructureLink {
         this.room.memory.centerLinkID = this.id
 
         // 注册中央 link 的同时发布 center
-        this.room.spawnController.release.center()
+        this.room.spawnController.release.releaseCenter()
 
         return `${this} 已注册为中央 link，发布 center 并调整采集单位`
     }

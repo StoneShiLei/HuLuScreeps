@@ -21,7 +21,6 @@ export default class BuildTaskAction extends BaseWorkerTaskAction<BuildTask> {
             // 优先建设任务中指定的工地
             let taskTarget
             if(this.task.targetId) taskTarget = Game.getObjectById(this.task.targetId)
-
             if (this.creep.buildStructure(taskTarget ?? undefined) === ERR_NOT_FOUND) {
                 this.controller.removeTask(this.task.id)
                 return this.creep.backToGetEnergy()
