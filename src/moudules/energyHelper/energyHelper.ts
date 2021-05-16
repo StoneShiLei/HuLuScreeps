@@ -11,6 +11,7 @@ export default class EnergyHelper {
         // 一个 carry 50 容积，至少要保证能有一个 carry 的能量给填充单位用
         [RESOURCE_ENERGY]: 100,
         [STRUCTURE_LINK]: 0,
+        "Ruin": 0,
     }
 
     /**
@@ -51,7 +52,8 @@ export default class EnergyHelper {
      * 获取目标的类型，用于抹平差异
      */
     static getTargetType(target: EnergyTarget) {
-        if ('structureType' in target) return target.structureType
+        if('destroyTime' in target) return "Ruin"
+        else if ('structureType' in target) return target.structureType
         else if ('resourceType' in target) return target.resourceType
         else throw new Error("未识别的类型")
     }
@@ -70,9 +72,11 @@ export default class EnergyHelper {
         if(!allEnergyTargets){
             // 查找 storage、terminal 和 container
             const containers = room.find<StructureContainer>(FIND_STRUCTURES,{filter:s => s && s.structureType === STRUCTURE_CONTAINER})
-            const structureList:(StructureContainer | StructureStorage | StructureTerminal)[] = [...containers ]
+            const structureList:(StructureContainer | StructureStorage | StructureTerminal | Ruin)[] = [...containers ]
+
             if(room.storage) structureList.unshift(room.storage)
             if(room.terminal) structureList.unshift(room.terminal)
+            structureList.unshift(...room.find(FIND_RUINS))
             const structureTargets = structureList
                 .filter(structure => structure && structure.store[RESOURCE_ENERGY] > 0)
 
@@ -88,12 +92,12 @@ export default class EnergyHelper {
 
             //缓存到房间实例上
             room._energyFilterObj = allEnergyTargets
-        }
 
+        }
 
         // 遍历所有过滤器
         const filteredTargets = filters.reduce((targets,filter) => filter(targets),allEnergyTargets)
-
+        console.log(JSON.stringify(filteredTargets.find(s => s.id === "609c060bf4e81d001d6431d3")))
         //设置搜索方法并执行搜索
         const targetFinder:EnergyTargetFinder = finder || this.getMax
         return targetFinder(filteredTargets)

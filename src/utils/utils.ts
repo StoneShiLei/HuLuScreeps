@@ -127,7 +127,7 @@ export default class Utils{
      * @param customCondition 自定义判断条件
      */
     static supporterIsNeed(source:Room,target:Room,condition:()=>boolean):boolean{
-    // 源房间没视野就默认孵化
+    // 目标房间没视野就默认孵化
     if (!target) return true
 
      // 源房间还不够 7 级并且目标房间的 spawn 已经造好了
