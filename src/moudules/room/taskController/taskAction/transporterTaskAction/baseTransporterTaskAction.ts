@@ -68,6 +68,8 @@ export default abstract class BaseTransporterTaskAction<Task extends BaseTranspo
 export class NoTaskAction extends BaseTransporterTaskAction<BaseTransporterTask>{
     getResource(): boolean {
         this.creep.say('💤')
+        if(this.creep.store.getUsedCapacity() > 0) return true
+
         const targets = this.creep.room.find(FIND_RUINS,{filter:s => s.store.getUsedCapacity() > 0})
         if(!targets || targets.length < 1) return false
         const target = this.creep.pos.findClosestByRange(targets)
@@ -81,6 +83,8 @@ export class NoTaskAction extends BaseTransporterTaskAction<BaseTransporterTask>
         return result == OK
     }
     workWithTarget(): boolean {
+        if(this.creep.store.getUsedCapacity() <= 0) return true
+
         const storage = this.creep.room.storage
         if(!storage) return false
 
