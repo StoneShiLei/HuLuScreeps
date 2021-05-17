@@ -257,7 +257,6 @@ export default class CreepExtension extends Creep {
                         this.memory.fillWallId = structure.id as Id<StructureWall | StructureRampart>
                         // 同时发布刷墙任务
                         this.room.workController.updateTask(new FillWallTask())
-                        console.log(11111)
                     }
                 }
 
