@@ -37,7 +37,7 @@ export default abstract class BaseWorkerTaskAction<Task extends BaseWorkerTask> 
 
         //还是获取不到resource
         if(!resource){
-            this.creep.say('没能量了，歇会')
+            this.creep.say('no energy!')
             return false
         }
 
@@ -59,7 +59,6 @@ export default abstract class BaseWorkerTaskAction<Task extends BaseWorkerTask> 
 export class NoTaskAction extends BaseWorkerTaskAction<BaseWorkerTask>{
     getResource(): boolean {
         this.creep.say('💤')
-        this.creep.goTo(new RoomPosition(25, 25, this.creep.room.name))
         return false
     }
     workWithTarget(): boolean {

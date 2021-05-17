@@ -1,3 +1,4 @@
+import Utils from "utils/utils";
 import FillExtensionTask from "../../task/transporterTask/fillExtensionTask";
 import BaseTransporterTaskAction from "./baseTransporterTaskAction";
 
@@ -58,7 +59,10 @@ export default class FillExtensionTaskAction extends BaseTransporterTaskAction<F
         const result = this.creep.transferTo(target,RESOURCE_ENERGY)
         if(result === ERR_NOT_ENOUGH_RESOURCES) return ERR_NOT_ENOUGH_ENERGY
         if(result === ERR_FULL) delete this.creep.memory.fillStructureId
-        if(result !== OK && result != ERR_NOT_IN_RANGE) this.creep.say(`拓展填充 ${result}`)
+        if(result !== OK && result != ERR_NOT_IN_RANGE) {
+            this.creep.say(`fillEx ${result}`)
+            Utils.log(`填扩展任务异常，transferTo 返回值: ${result}`)
+        }
         return OK
     }
 }

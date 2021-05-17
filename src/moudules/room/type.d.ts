@@ -3,7 +3,7 @@
     /**
      * 基地中心点坐标, [0] 为 x 坐标, [1] 为 y 坐标
      */
-    center: [ number, number ]
+    center?: [ number, number ]
     /**
      * 当前被 repairer 或 tower 关注的墙
      */
@@ -26,17 +26,28 @@
 }
 
 interface Room{
-    sources?:Source[]
-    mineral?: Mineral
-    source?: Source[]
-    centerLink?: StructureLink
+    sources?:Source[] //room的source列表 暂时由spawn维护
+    mineral?: Mineral //由矿工维护
     /**
      * 焦点墙，维修单位总是倾向于优先修复该墙体
      */
     _importantWall: StructureWall | StructureRampart
+
+    /**
+     * @param pos 设置基地中心点
+     */
+    setBaseCenter(pos: RoomPosition): OK | ERR_INVALID_ARGS
+
+    /**
+     * 占领新房间
+     * @param targetRoomName
+     * @param signText
+     */
+    claimRoom(targetRoomName: string, signText?: string): OK
 }
 
 
-type MemoryKey = SpawnList
+type MemoryKey = SpawnList | CenterList
 
 type SpawnList = "spawnList"
+type CenterList = "centerList"

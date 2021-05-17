@@ -11,18 +11,22 @@ export default class EnergyHelper {
         // 一个 carry 50 容积，至少要保证能有一个 carry 的能量给填充单位用
         [RESOURCE_ENERGY]: 100,
         [STRUCTURE_LINK]: 0,
+        "Ruin": 0,
     }
 
     /**
      * 查找器 - 找到最多的能量来源
      */
-    static getMax: EnergyTargetFinder = targets => _.max(targets, EnergyHelper.getEnergyAmount)
+    static getMax: EnergyTargetFinder = targets => {
+        if(targets.length == 0) return null
+        return _.max(targets, EnergyHelper.getEnergyAmount)
+    }
     /**
      * 生成查找器 - 找到离目标位置最近的能量来源
      *
      * @param pos 目标位置
      */
-    static getClosestTo: (pos: RoomPosition) => EnergyTargetFinder | null = (pos) => {
+    static getClosestTo: (pos: RoomPosition) => EnergyTargetFinder = (pos) => {
         return targets => {
             const result = pos.findClosestByPath<EnergyTarget>(targets)
             return  result
@@ -48,7 +52,8 @@ export default class EnergyHelper {
      * 获取目标的类型，用于抹平差异
      */
     static getTargetType(target: EnergyTarget) {
-        if ('structureType' in target) return target.structureType
+        if('destroyTime' in target) return "Ruin"
+        else if ('structureType' in target) return target.structureType
         else if ('resourceType' in target) return target.resourceType
         else throw new Error("未识别的类型")
     }
@@ -61,15 +66,17 @@ export default class EnergyHelper {
      * @param finder 搜索方法，该方法接受房间里能量大于零的数组，并返回其中之一
      * @param filters 过滤方法，该方法接受房间里能量大于零的数组，并返回其中的一部分
      */
-    static getRoomEnergyTarget(room:Room,finder:EnergyTargetFinder | null,...filters:EnergyTargetFilter[]):EnergyTarget | null{
+    static getRoomEnergyTarget(room:Room,finder?:EnergyTargetFinder | null,...filters:EnergyTargetFilter[]):EnergyTarget | null{
         let allEnergyTargets = room._energyFilterObj
 
         if(!allEnergyTargets){
             // 查找 storage、terminal 和 container
             const containers = room.find<StructureContainer>(FIND_STRUCTURES,{filter:s => s && s.structureType === STRUCTURE_CONTAINER})
-            const structureList:(StructureContainer | StructureStorage | StructureTerminal)[] = [...containers ]
+            const structureList:(StructureContainer | StructureStorage | StructureTerminal | Ruin)[] = [...containers ]
+
             if(room.storage) structureList.unshift(room.storage)
             if(room.terminal) structureList.unshift(room.terminal)
+            structureList.unshift(...room.find(FIND_RUINS))
             const structureTargets = structureList
                 .filter(structure => structure && structure.store[RESOURCE_ENERGY] > 0)
 
@@ -85,12 +92,11 @@ export default class EnergyHelper {
 
             //缓存到房间实例上
             room._energyFilterObj = allEnergyTargets
-        }
 
+        }
 
         // 遍历所有过滤器
         const filteredTargets = filters.reduce((targets,filter) => filter(targets),allEnergyTargets)
-
         //设置搜索方法并执行搜索
         const targetFinder:EnergyTargetFinder = finder || this.getMax
         return targetFinder(filteredTargets)

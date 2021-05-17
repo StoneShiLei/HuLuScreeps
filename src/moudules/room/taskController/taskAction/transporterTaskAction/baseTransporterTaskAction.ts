@@ -41,7 +41,7 @@ export default abstract class BaseTransporterTaskAction<Task extends BaseTranspo
             let target = resource? resource : this.creep.room.find(FIND_SOURCES)[0]
             //先移动到目标附近
             if(target) this.creep.goTo(target.pos,{range:3})
-            else this.creep.say('😯没能量呀')
+            else this.creep.say('no energy!')
 
             delete this.creep.memory.sourceId
             return false
@@ -56,6 +56,7 @@ export default abstract class BaseTransporterTaskAction<Task extends BaseTranspo
 export class NoTaskAction extends BaseTransporterTaskAction<BaseTransporterTask>{
     getResource(): boolean {
         this.creep.say('💤')
+        // this.creep.goTo(new RoomPosition(25, 25, this.creep.room.name))
         return false
     }
     workWithTarget(): boolean {

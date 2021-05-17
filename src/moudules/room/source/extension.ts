@@ -10,7 +10,6 @@ export default class SourceExtension extends Source {
 
         const freePosCount = this.pos.getFreeSpace().length
         const harvestCount = this.pos.findInRange(FIND_CREEPS,1).length
-
         return freePosCount - harvestCount > 0
     }
 
@@ -21,11 +20,13 @@ export default class SourceExtension extends Source {
      */
     public setDroppedPos(pos:RoomPosition):void{
         this.keepKeyExist()
+        if(!this.room.memory.source) return
         this.room.memory.source[this.id].dropped = `${pos.x},${pos.y}`
     }
 
     public getDroppedInfo():DroppedInfo{
         this.keepKeyExist()
+        if(!this.room.memory.source) return {}
 
         const { dropped } = this.room.memory.source[this.id]
         if(!dropped) return {}
@@ -51,6 +52,8 @@ export default class SourceExtension extends Source {
      */
     public setContainer(container:StructureContainer):void{
         this.keepKeyExist()
+        if(!this.room.memory.source) return
+
         this.room.memory.source[this.id].containerId = container.id
     }
 
@@ -60,6 +63,7 @@ export default class SourceExtension extends Source {
      */
     public getContainer():StructureContainer | null{
         this.keepKeyExist()
+        if(!this.room.memory.source) return null
 
         const { containerId } = this.room.memory.source[this.id]
         if(!containerId) return null
@@ -78,6 +82,8 @@ export default class SourceExtension extends Source {
      */
     public setLink(link: StructureLink): void {
         this.keepKeyExist()
+        if(!this.room.memory.source) return
+
         this.room.memory.source[this.id].LinkId = link.id
     }
 
@@ -86,6 +92,7 @@ export default class SourceExtension extends Source {
      */
     public getLink(): StructureLink | null {
         this.keepKeyExist()
+        if(!this.room.memory.source) return null
 
         const { LinkId } = this.room.memory.source[this.id]
         if (!LinkId) return null

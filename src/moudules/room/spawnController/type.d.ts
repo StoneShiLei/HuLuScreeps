@@ -41,6 +41,6 @@ interface RoomMemory{
      */
     baseUnitLimit?: string
 
-    workerNum:number
-    transporterNum:number
+    workerNum?:number
+    transporterNum?:number
 }

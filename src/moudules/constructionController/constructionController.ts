@@ -120,7 +120,8 @@ export default class ConstructionController{
      * @param pos 获取本房间内距离该位置最近且优先级最高的工地
      */
     static getNearSite(pos: RoomPosition): ConstructionSite | undefined  {
-        const room = Game.rooms[pos.roomName]
+        const room
+         = Game.rooms[pos.roomName]
         if (!room) return undefined
 
         const sites: ConstructionSite[] = room.find(FIND_MY_CONSTRUCTION_SITES)
@@ -149,6 +150,7 @@ export default class ConstructionController{
      * 向队列里新增建造任务
      */
     static addConstructionSite(sites: ConstructionPos[]) {
+
         this.waitingConstruction.push(...sites)
         Game._needSaveConstructionData = true
     }

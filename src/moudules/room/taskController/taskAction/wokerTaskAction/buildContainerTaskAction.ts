@@ -22,9 +22,9 @@ export default class BuildContainerTaskAction extends BaseWorkerTaskAction<Build
             // 建造初始 container 时一无所有，所以只会捡地上的能量来用
             const droppedEnergy = source.getDroppedInfo().energy
             if (!droppedEnergy || droppedEnergy.amount < 100) {
-                if(Game.time % 100) this.creep.say('等能量回复')
+                if(Game.time % 100) this.creep.say('wait energy')
                 // 等待时先移动到附近
-                this.creep.goTo(source.pos, { range: 3 })
+                this.creep.goTo(source.pos, { range: 4 })
                 return false
             }
 

@@ -2,7 +2,7 @@
 
 interface RoomMemory{
     //rcl
-    controllerLevel:number
+    controllerLevel?:number
 }
 
 interface StructureController{

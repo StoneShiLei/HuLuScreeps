@@ -1,23 +1,32 @@
 import Utils from "utils/utils";
+import RoomCenterController from "./centerController/roomCenterController";
+import RoomExtension from "./extension";
 import SourceExtension from "./source/extension";
 import SpawnExtension from "./spawnController/extension";
 import RoomSpawnController from "./spawnController/roomSpawnController";
 import ContructionSiteExtension from "./structures/constructionSite/extension";
 import ContainerExtension from "./structures/container/extension";
 import ControllerExtension from "./structures/controller/extension";
-import TowerExtension from "./structures/tower/extension";
+import ExtractorExtension from "./structures/extractor/extension";
+import LinkExtension  from "./structures/link/extension";
+import StorageExtension from "./structures/storage/extension";
+import TowerExtension from "./structures/tower/tower";
 import TransportTaskController from "./taskController/controller/transportTaskController";
 import WorkTaskController from "./taskController/controller/workTaskController";
 
 
 
 export const mountRoom = function() {
+    Utils.assignPrototype(Room,RoomExtension)
     Utils.assignPrototype(Source,SourceExtension)
     Utils.assignPrototype(StructureSpawn,SpawnExtension)
     Utils.assignPrototype(StructureContainer,ContainerExtension)
     Utils.assignPrototype(StructureController,ControllerExtension)
     Utils.assignPrototype(ConstructionSite,ContructionSiteExtension)
     Utils.assignPrototype(StructureTower,TowerExtension)
+    Utils.assignPrototype(StructureStorage,StorageExtension)
+    Utils.assignPrototype(StructureLink,LinkExtension)
+    Utils.assignPrototype(StructureExtractor,ExtractorExtension)
 }
 
 export default function mountMouduleController(){
@@ -25,6 +34,7 @@ export default function mountMouduleController(){
         ['transportController',TransportTaskController],
         ['workController',WorkTaskController],
         ['spawnController',RoomSpawnController],
+        ['centerController',RoomCenterController]
     ]
 
     const controllerStorage:ControllerStorage = {}
@@ -72,5 +82,9 @@ export default function mountMouduleController(){
          * 孵化控制模块
          */
          spawnController: RoomSpawnController
+         /**
+          * 中央任务模块
+          */
+         centerController:RoomCenterController
     }
 }

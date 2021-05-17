@@ -18,26 +18,41 @@ interface CreepMemory{
     working:boolean
 }
 
-type AllData = EmptyData | HarvesterData | TransporterData | WorkerData
+type AllData = EmptyData | HarvesterData | TransporterData | WorkerData | CenterData
+type AllRoles = BasisRoles | RemoteRoles
 
-type AllRoles = BasisRoles
 
-type BasisRoles = Harvester | Transporter | Worker
-
+type BasisRoles = Harvester | Transporter | Worker | Center
 type Harvester = "harvester"
 type Transporter = "transporter"
 type Worker = "worker"
+type Center = "center"
+
+
+type RemoteRoles = Claimer | UpgradeSupporter | BuildSupporter
+type Claimer = "claimer"
+type UpgradeSupporter = "upgradeSupporter"
+type BuildSupporter = "buildSupporter"
 
 
 
 interface CreepMemory{
     data:CreepData
+    /**
+     * 可以执行建筑的单位特有，当该值为 true 时将不会尝试建造
+     */
+    dontBuild?: boolean
 }
 
 interface CreepData{
     harvesterData?:HarvesterData
     transporterData?:TransporterData
     workerData?:WorkerData
+    centerData?:CenterData
+    claimerData?:RemoteDeclarerData
+    upgradeSupporterData?:SupporterData
+    buildSupporterData?:SupporterData
+
 }
 
 interface EmptyData{}
@@ -68,4 +83,38 @@ interface TransporterData{
 interface WorkerData{
     //该 creep 的工作房间
     workRoom: string
+}
+
+interface CenterData {
+    x: number
+    y: number
+}
+
+/**
+ * 远程声明单位的 data
+ * 这些单位都会和目标房间的 controller 打交道
+ */
+interface RemoteDeclarerData {
+    /**
+     * 要声明控制的房间名
+     */
+    targetRoomName: string
+    /**
+     * 给控制器的签名
+     */
+    signText?: string
+}
+
+/**
+ * 远程协助单位的 data
+ */
+interface SupporterData {
+    /**
+     * 要支援的房间名
+     */
+    targetRoomName: string
+    /**
+     * 该房间中的能量来源
+     */
+    sourceId: Id<Source | StructureContainer | StructureStorage | StructureTerminal>
 }

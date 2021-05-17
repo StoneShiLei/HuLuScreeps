@@ -1,5 +1,6 @@
 import { filter } from "lodash"
 import ConstructionController from "moudules/constructionController/constructionController"
+import MoveUtil from "moudules/move/moveUtil"
 import FillWallTask from "moudules/room/taskController/task/wokerTask/fillWallTask"
 import { creepRoleConfig } from "role"
 import { minWallHits, repairSetting } from "setting"
@@ -12,7 +13,8 @@ export default class CreepExtension extends Creep {
     public onWork(): void{
         // 检查 creep 内存中的角色是否存在
         if(!(this.memory.role in creepRoleConfig)){
-            this.say('我没角色？')
+            this.say('no role!')
+            return
         }
 
         if(this.spawning) return
@@ -46,12 +48,25 @@ export default class CreepExtension extends Creep {
         if(stateChange) this.memory.working = !this.memory.working
     }
 
-    public goTo(target:RoomPosition,opt?:GoToOpt):ScreepsReturnCode{
-        // if(!this.memory.pathCache || Game.time % 5){
+    public goTo(target:RoomPosition,opt:GoToOpt = {range:0}):ScreepsReturnCode{
+        return this.moveTo(target,opt)
+    }
 
-        // }
-        this.memory.pathCache = this.room.findPath(this.pos,target,opt)
-        const result = this.moveByPath(this.memory.pathCache)
+    public goToTest(target:RoomPosition,opt:GoToOpt = {range:0}):ScreepsReturnCode{
+        let path:RoomPosition[] | undefined = undefined
+        path = MoveUtil.findPath(this,target,opt)
+        if(!path) return ERR_NOT_FOUND
+        this.memory.pathCache = path
+        return this.moveByPath(this.memory.pathCache)
+    }
+
+    public goFar(target:RoomPosition,opt:GoToOpt = {range:0}):ScreepsReturnCode{
+        let path:RoomPosition[] | undefined = undefined
+        path = MoveUtil.findSafePath(this,target,opt)
+        if(!path) return ERR_NOT_FOUND
+        this.memory.pathCache = path
+        const result = this.moveByPath(path)
+        // console.log(result)
         return result
     }
 
@@ -74,11 +89,13 @@ export default class CreepExtension extends Creep {
      */
     public getEngryFrom(target: AllEnergySource): ScreepsReturnCode {
         let result: ScreepsReturnCode
-        // 是建筑就用 withdraw
-        if (target instanceof Structure) {
+        // 是建筑 或者遗迹 就用 withdraw
+        if (target instanceof Ruin || target instanceof Structure) {
             // 如果建筑里没能量了就不去了，防止出现粘性
-            if (target.store[RESOURCE_ENERGY] <= 0) return ERR_NOT_ENOUGH_ENERGY
-            result = this.withdraw(target as Structure, RESOURCE_ENERGY)
+            if ((target instanceof Structure || target instanceof Ruin ) && target.store[RESOURCE_ENERGY] <= 0) return ERR_NOT_ENOUGH_ENERGY
+            else if(target instanceof Ruin)result = this.withdraw(target as Ruin, RESOURCE_ENERGY)
+            else if(target instanceof Structure)result = this.withdraw(target as Structure, RESOURCE_ENERGY)
+            else return ERR_INVALID_TARGET
         }
         else if (target instanceof Resource) result = this.pickup(target as Resource)
         // 不是的话就用 harvest
@@ -96,7 +113,7 @@ export default class CreepExtension extends Creep {
      * @param target 要转移到的目标
      * @param RESOURCE 要转移的资源类型
      */
-    public transferTo(target: AnyCreep | Structure, RESOURCE: ResourceConstant, moveOpt: GoToOpt = {}): ScreepsReturnCode {
+    public transferTo(target: AnyCreep | Structure, RESOURCE: ResourceConstant, moveOpt: GoToOpt = {range:0}): ScreepsReturnCode {
         this.goTo(target.pos, moveOpt)
         return this.transfer(target, RESOURCE)
     }
@@ -226,7 +243,6 @@ export default class CreepExtension extends Creep {
             if(selfKeepTarget) return selfKeepTarget
             else{
                 const structure = ConstructionController.buildCompleteSite[this.memory.constructionSiteId || ""]
-
                 // 如果刚修好的是墙的话就记住该墙的 id，然后把血量刷高一点）
                 if (structure && (
                     structure.structureType === STRUCTURE_WALL ||

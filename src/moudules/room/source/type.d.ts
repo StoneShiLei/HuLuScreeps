@@ -36,7 +36,7 @@ interface RoomMemory{
     /**
      * source 相关
      */
-    source: {
+    source?: {
         [sourceId: string]: {
             /**
              * 能量丢弃到的位置

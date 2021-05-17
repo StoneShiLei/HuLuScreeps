@@ -1,3 +1,4 @@
+import Utils from "utils/utils"
 import UpgradeTask from "../../task/wokerTask/upgradeTask"
 import BaseWorkerTaskAction from "./baseWorkerTaskAction"
 
@@ -19,7 +20,10 @@ export default class UpgradeTaskAction extends BaseWorkerTaskAction<UpgradeTask>
         if(result === ERR_NOT_ENOUGH_RESOURCES){
             return this.creep.backToGetEnergy()
         }
-        if(result !== ERR_NOT_IN_RANGE && result !== OK) this.creep.say("升级失败" + result)
+        if(result !== ERR_NOT_IN_RANGE && result !== OK){
+            this.creep.say("upgrade" + result)
+            Utils.log(`升级任务异常，upgradeRoom 返回值: ${result}`)
+        }
         return false
     }
 }

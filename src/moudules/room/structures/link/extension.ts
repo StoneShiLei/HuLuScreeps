@@ -1,6 +1,7 @@
+import CenterTask from "moudules/room/centerController/centerTask"
 
 // Link 原型拓展
-export class LinkExtension extends StructureLink {
+export default class LinkExtension extends StructureLink {
     /**
      * link 主要工作
      */
@@ -9,8 +10,8 @@ export class LinkExtension extends StructureLink {
         if (this.cooldown != 0) return
 
         // 检查内存字段来决定要执行哪种职责的工作
-        if (this.room.memory.centerLinkId && this.room.memory.centerLinkId === this.id) this.centerWork()
-        else if (this.room.memory.upgradeLinkId && this.room.memory.upgradeLinkId === this.id) this.upgradeWork()
+        if (this.room.memory.centerLinkID && this.room.memory.centerLinkID === this.id) this.centerWork()
+        else if (this.room.memory.upgradeLinkID && this.room.memory.upgradeLinkID === this.id) this.upgradeWork()
         else this.sourceWork()
     }
 
@@ -20,18 +21,17 @@ export class LinkExtension extends StructureLink {
      */
     public onBuildComplete(): void {
         // 如果附近有 controller 就转换为 UpgradeLink
-        if(!this.room.controller) return
-        if (this.room.controller.pos.inRangeTo(this, 2)) {
+        if (this.room.controller && this.room.controller.pos.inRangeTo(this, 2)) {
             this.asUpgrade()
             return
         }
 
         // 在基地中心附近就转换为 CenterLink
         const center = this.room.memory.center
-        // if (center && this.pos.isNearTo(new RoomPosition(center[0], center[1], this.room.name))) {
-        //     this.asCenter()
-        //     return
-        // }
+        if (center && this.pos.isNearTo(new RoomPosition(center[0], center[1], this.room.name))) {
+            this.asCenter()
+            return
+        }
 
         // 否则就默认转换为 SourceLink（因为有外矿 link，而这种 link 边上是没有 source 的）
         this.asSource()
@@ -63,12 +63,12 @@ export class LinkExtension extends StructureLink {
      */
     public asCenter(): string {
         this.clearRegister()
-        this.room.memory.centerLinkId = this.id
+        this.room.memory.centerLinkID = this.id
 
-        // 注册中央 link 的同时发布 processor
-        this.room.spawnController.release.processor()
+        // 注册中央 link 的同时发布 center
+        this.room.spawnController.release.releaseCenter()
 
-        return `${this} 已注册为中央 link，发布 processor 并调整采集单位`
+        return `${this} 已注册为中央 link，发布 center 并调整采集单位`
     }
 
     /**
@@ -80,7 +80,7 @@ export class LinkExtension extends StructureLink {
     public asUpgrade(): string {
         this.clearRegister()
 
-        this.room.memory.upgradeLinkId = this.id
+        this.room.memory.upgradeLinkID = this.id
         return `${this} 已注册为升级 link`
     }
 
@@ -89,8 +89,8 @@ export class LinkExtension extends StructureLink {
      * 防止同时拥有多个角色
      */
     private clearRegister() {
-        if (this.room.memory.centerLinkId == this.id) delete this.room.memory.centerLinkId
-        if (this.room.memory.upgradeLinkId == this.id) delete this.room.memory.upgradeLinkId
+        if (this.room.memory.centerLinkID == this.id) delete this.room.memory.centerLinkID
+        if (this.room.memory.upgradeLinkID == this.id) delete this.room.memory.upgradeLinkID
     }
 
     /**
@@ -101,7 +101,9 @@ export class LinkExtension extends StructureLink {
     private upgradeWork(): void {
         // 有能量就待机
         if (this.store[RESOURCE_ENERGY] > 100) return
-        const centerlink = this.room.centerLink
+        //没找到中央link id
+        if(!this.room.memory.centerLinkID) return
+        const centerlink = Game.getObjectById(this.room.memory.centerLinkID)
         // 中央 link 没冷却好，待机
         if (!centerlink || centerlink.cooldown > 0) return
 
@@ -112,8 +114,7 @@ export class LinkExtension extends StructureLink {
          *
          * 这种情况只会在房间从 7 级以上掉级下来时出现
          */
-        if(!this.room.controller) return
-        if (this.room.controller.level < 7) this.destroy()
+        if (this.room.controller && this.room.controller.level < 7) this.destroy()
 
         let source: StructureTerminal | StructureStorage | null = null
         // 优先用 terminal 里的能量
@@ -124,14 +125,9 @@ export class LinkExtension extends StructureLink {
         if (!source) return
 
         // 以 centerLink 的名义发布中央物流任务
-        const result = this.room.centerTransport.addTask({
-            submit: 'centerLink',
-            source: source.structureType,
-            target: 'centerLink',
-            resourceType: RESOURCE_ENERGY,
-            // 自己和 centerLink 的容量中找最小值
-            amount: Math.min(this.store.getFreeCapacity(RESOURCE_ENERGY), centerlink.store.getFreeCapacity(RESOURCE_ENERGY))
-        })
+        const result = this.room.centerController.addTask(new CenterTask(
+            'centerLink',source.structureType,'centerLink',RESOURCE_ENERGY,Math.min(this.store.getFreeCapacity(RESOURCE_ENERGY), centerlink.store.getFreeCapacity(RESOURCE_ENERGY))
+        ))
     }
 
     /**
@@ -147,15 +143,9 @@ export class LinkExtension extends StructureLink {
         if (this.supportUpgradeLink()) return
 
         // 之前发的转移任务没有处理好的话就先挂机
-        if (this.room.centerTransport.hasTask('centerLink') || !this.room.storage) return
+        if (this.room.centerController.hasTask('centerLink') || !this.room.storage) return
 
-        this.room.centerTransport.addTask({
-            submit: 'centerLink',
-            source: 'centerLink',
-            target: STRUCTURE_STORAGE,
-            resourceType: RESOURCE_ENERGY,
-            amount: this.store[RESOURCE_ENERGY]
-        })
+        this.room.centerController.addTask(new CenterTask('centerLink','centerLink',STRUCTURE_STORAGE,RESOURCE_ENERGY,this.store[RESOURCE_ENERGY]))
     }
 
     /**
@@ -173,8 +163,8 @@ export class LinkExtension extends StructureLink {
         // if (this.supportUpgradeLink()) return
 
         // 发送给 center link
-        if (this.room.memory.centerLinkId) {
-            const centerLink = this.getLinkByMemoryKey('centerLinkId')
+        if (this.room.memory.centerLinkID) {
+            const centerLink = this.getLinkByMemoryKey('centerLinkID')
             if (!centerLink || centerLink.store[RESOURCE_ENERGY] >= 799) return
 
             this.transferEnergy(centerLink)
@@ -186,8 +176,8 @@ export class LinkExtension extends StructureLink {
      * @returns 是否进行了发送
      */
     private supportUpgradeLink(): boolean {
-        if (this.room.memory.upgradeLinkId) {
-            const upgradeLink = this.getLinkByMemoryKey('upgradeLinkId')
+        if (this.room.memory.upgradeLinkID) {
+            const upgradeLink = this.getLinkByMemoryKey('upgradeLinkID')
             // 如果 upgrade link 没能量了就转发给它
             if (upgradeLink && upgradeLink.store[RESOURCE_ENERGY] <= 100) {
                 this.transferEnergy(upgradeLink)
@@ -206,9 +196,9 @@ export class LinkExtension extends StructureLink {
      * @param memoryKey link 的 id 保存在哪个 room.memory 字段中
      */
     private getLinkByMemoryKey(memoryKey: string): StructureLink | null {
-        const linkId: Id<StructureLink> = this.room.memory[memoryKey as keyof RoomMemory] as Id<StructureLink>
+        const linkId: Id<StructureLink>  = this.room.memory[memoryKey as keyof RoomMemory] as Id<StructureLink>
         if (!linkId) return null
-        const link: StructureLink | null = Game.getObjectById(linkId)
+        const link: StructureLink | null= Game.getObjectById(linkId)
         // 不存在说明 link 已经被摧毁了 清理并退出
         if (!link) {
             delete this.room.memory[memoryKey as keyof RoomMemory]
