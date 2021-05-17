@@ -1,3 +1,4 @@
+import { constant } from "lodash";
 import EnergyHelper from "moudules/energyHelper/energyHelper";
 import BaseTaskController from "../../controller/baseTaskController";
 import BaseTransporterTask from "../../task/transporterTask/baseTransporterTask";
@@ -53,13 +54,41 @@ export default abstract class BaseTransporterTaskAction<Task extends BaseTranspo
     }
 }
 
+// export class NoTaskAction extends BaseTransporterTaskAction<BaseTransporterTask>{
+//     getResource(): boolean {
+//         this.creep.say('💤')
+//         // this.creep.goTo(new RoomPosition(25, 25, this.creep.room.name))
+//         return false
+//     }
+//     workWithTarget(): boolean {
+//         return true
+//     }
+// }
+
 export class NoTaskAction extends BaseTransporterTaskAction<BaseTransporterTask>{
     getResource(): boolean {
         this.creep.say('💤')
-        // this.creep.goTo(new RoomPosition(25, 25, this.creep.room.name))
-        return false
+        const targets = this.creep.room.find(FIND_RUINS,{filter:s => s.store.getUsedCapacity() > 0})
+        if(!targets || targets.length < 1) return false
+        const target = this.creep.pos.findClosestByRange(targets)
+        if(!target) return false
+        this.creep.goTo(target.pos)
+        let result
+        for(let resourceType in target.store){
+            result =  this.creep.withdraw(target,resourceType as ResourceConstant)
+        }
+
+        return result == OK
     }
     workWithTarget(): boolean {
-        return true
+        const storage = this.creep.room.storage
+        if(!storage) return false
+
+        this.creep.goTo(storage.pos,{range:1})
+        let result
+        for(let resourceType in this.creep.store){
+            result = this.creep.transfer(storage,resourceType as ResourceConstant)
+        }
+        return result == OK
     }
 }
