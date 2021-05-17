@@ -26,4 +26,10 @@ interface Game {
 
 interface Memory{
     waitingConstruction?:string
+    lastGameConstruction?:ConstructionInfo[]
+    buildCompleteSite?:StructureInfo[]
 }
+
+
+type ConstructionInfo ={ constructionSiteId: string,pos:string[],type:BuildableStructureConstant}
+type StructureInfo = {structionId: string,siteInfo:ConstructionInfo}

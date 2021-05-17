@@ -10,7 +10,7 @@ import ControllerExtension from "./structures/controller/extension";
 import ExtractorExtension from "./structures/extractor/extension";
 import LinkExtension  from "./structures/link/extension";
 import StorageExtension from "./structures/storage/extension";
-import TowerExtension from "./structures/tower/tower";
+import TowerExtension from "./structures/tower/extension";
 import TransportTaskController from "./taskController/controller/transportTaskController";
 import WorkTaskController from "./taskController/controller/workTaskController";
 

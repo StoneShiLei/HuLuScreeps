@@ -17,13 +17,30 @@ export default class ConstructionController{
      * 上个 tick 的 Game.constructionSites
      * 用于和本 tick 进行比对，找到是否有工地建造完成
      */
-    private static lastGameConstruction: { [constructionSiteId: string]: ConstructionSite } = {}
+    private static get lastGameConstruction():ConstructionInfo[]{
+        if(!Memory.lastGameConstruction) Memory.lastGameConstruction = []
+        return Memory.lastGameConstruction
+    }
+
+    private static set lastGameConstruction(list:ConstructionInfo[]){
+        Memory.lastGameConstruction = list
+    }
+
+    public static get buildCompleteSite():StructureInfo[]{
+        if(!Memory.buildCompleteSite) Memory.buildCompleteSite = []
+        return Memory.buildCompleteSite
+    }
+
+    public static setBuildCompleteSite(info:StructureInfo){
+        if(!Memory.buildCompleteSite) Memory.buildCompleteSite = []
+        Memory.buildCompleteSite.push(info)
+    }
 
     /**
      * 建造完成的建筑，键为工地 id，值为对应建造完成的建筑
      * 会存放在这里供其他模块搜索，全局重置时将被清空
      */
-    public static buildCompleteSite: { [constructionSiteId: string]: Structure } = {}
+    // public static buildCompleteSite: { [constructionSiteId: string]: Structure } = {}
 
     public static manageConstruction(){
         this.planSite()
@@ -42,6 +59,9 @@ export default class ConstructionController{
             const { x, y, roomName } = pos
             return { pos: new RoomPosition(x, y, roomName), type }
         })
+
+        //防止内存溢出
+        delete Memory.buildCompleteSite
     }
 
     static planSite(){
@@ -80,25 +100,26 @@ export default class ConstructionController{
      */
     static handleCompleteSite(){
         try {
-            const lastSiteIds = Object.keys(this.lastGameConstruction)
+            const lastSiteIds = this.lastGameConstruction.map(info => info.constructionSiteId)
             const nowSiteIds = Object.keys(Game.constructionSites)
             // 工地数量不一致了，说明有工地被踩掉或者造好了
             if (lastSiteIds.length !== nowSiteIds.length) {
                 const disappearedSiteIds = lastSiteIds.filter(id => !(id in Game.constructionSites))
-
                 disappearedSiteIds.map(siteId => {
-                    const lastSite = this.lastGameConstruction[siteId]
+                    const lastSite = this.lastGameConstruction.find(site => site.constructionSiteId == siteId)
+                    if(!lastSite) return
                     const structure = this.getSiteStructure(lastSite)
 
                     // 建造完成
                     if (structure) {
                         // 如果有的话就执行回调
                         if (structure.onBuildComplete) structure.onBuildComplete()
-                        this.buildCompleteSite[siteId] = structure
+
+                        this.setBuildCompleteSite({structionId:structure.id,siteInfo:lastSite})
                     }
                     // 建造失败，回存到等待队列
                     else {
-                        this.waitingConstruction.push({ pos: lastSite.pos, type: lastSite.structureType })
+                        this.waitingConstruction.push({ pos: new RoomPosition(Number(lastSite.pos[0]),Number(lastSite.pos[1]),lastSite.pos[2]), type: lastSite.type })
                         Game._needSaveConstructionData = true
                     }
                 })
@@ -109,7 +130,13 @@ export default class ConstructionController{
         }
         finally {
             // 更新缓存
-            this.lastGameConstruction = Game.constructionSites
+            const tempList:ConstructionInfo[] = []
+            for(let siteId in Game.constructionSites){
+                const site = Game.constructionSites[siteId]
+                const info = { constructionSiteId: site.id,pos:[String(site.pos.x),String(site.pos.y),site.pos.roomName],type:site.structureType}
+                tempList.push(info)
+            }
+            this.lastGameConstruction = tempList
         }
     }
 
@@ -161,10 +188,12 @@ export default class ConstructionController{
      * @param site 建筑工地
      * @returns 若建造完成则返回对应的建筑
      */
-    static getSiteStructure(site: ConstructionSite): Structure | undefined{
+    static getSiteStructure(site: ConstructionInfo): Structure | undefined{
+        if(!site)return undefined
         // 检查上面是否有已经造好的同类型建筑
-        const result = site.pos.lookFor(LOOK_STRUCTURES).find(({ structureType }) => {
-            return structureType === site.structureType
+        const pos = new RoomPosition(Number(site.pos[0]),Number(site.pos[1]),site.pos[2])
+        const result = pos.lookFor(LOOK_STRUCTURES).find(({ structureType }) => {
+            return structureType === site.type
         })
         return result
     }

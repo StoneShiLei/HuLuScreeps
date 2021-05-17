@@ -28,4 +28,19 @@ export default class Util {
         room.claimRoom(targetRoomName,signText)
         return `已发布 claimer，请保持关注，支援单位会在占领成功后自动发布。`
     }
+
+    /**
+     * 重分配全部任务
+     * @param roomName
+     * @param controllerType
+     * @returns
+     */
+    static reTask(roomName:string,controllerType:string){
+        const room = Game.rooms[roomName]
+        if (!room) return `未找到名为 ${roomName} 的房间`
+        if(controllerType === 'transport') room.transportController.distributionTask();
+        else if(controllerType === 'work') room.workController.distributionTask();
+        else return "错误的controllerType"
+        return "OK"
+    }
 }

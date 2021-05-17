@@ -242,16 +242,25 @@ export default class CreepExtension extends Creep {
             const selfKeepTarget = Game.getObjectById<ConstructionSite>(this.memory.constructionSiteId || "")
             if(selfKeepTarget) return selfKeepTarget
             else{
-                const structure = ConstructionController.buildCompleteSite[this.memory.constructionSiteId || ""]
-                // 如果刚修好的是墙的话就记住该墙的 id，然后把血量刷高一点）
-                if (structure && (
-                    structure.structureType === STRUCTURE_WALL ||
-                    structure.structureType === STRUCTURE_RAMPART
-                )) {
-                    this.memory.fillWallId = structure.id as Id<StructureWall | StructureRampart>
-                    // 同时发布刷墙任务
-                    this.room.workController.updateTask(new FillWallTask())
+
+                if(this.memory.constructionSiteId){
+                    const memoryID = this.memory.constructionSiteId
+                    const structureInfo = ConstructionController.buildCompleteSite.find(s => s.siteInfo.constructionSiteId == memoryID)
+                    let structure:Structure | null = null
+                    if(structureInfo) structure = Game.getObjectById(structureInfo.structionId)
+
+                    // console.log("22  " + console.log(JSON.stringify(Memory.buildCompleteSite)))
+                    // console.log("33  " + this.memory.constructionSiteId)
+                    // console.log("44  " + structure)
+                    // 如果刚修好的是墙的话就记住该墙的 id，然后把血量刷高一点）
+                    if (structure && (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART)) {
+                        this.memory.fillWallId = structure.id as Id<StructureWall | StructureRampart>
+                        // 同时发布刷墙任务
+                        this.room.workController.updateTask(new FillWallTask())
+                        console.log(11111)
+                    }
                 }
+
                 delete this.memory.constructionSiteId
             }
         }
