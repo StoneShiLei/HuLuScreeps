@@ -134,8 +134,16 @@ export default class HarvesterConfig implements RoleConfig{
                 if(!creep.memory.data.harvesterData) return false
 
                 const container = source.getContainer()
+
                 if (!container) {
                     creep.memory.data.harvesterData.harvestMode = "harvestStartMode"
+                    return false
+                }
+
+                //可能会出现container被link摧毁后重新放置的可能性  搜索link然后更改mode
+                const link = source.getLink()
+                if(link){
+                    creep.memory.data.harvesterData.harvestMode = "harvestStructureMode"
                     return false
                 }
 

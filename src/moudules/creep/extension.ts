@@ -142,19 +142,24 @@ export default class CreepExtension extends Creep {
      */
     public steadyWall(): OK | ERR_NOT_FOUND {
         const wallID = this.memory.fillWallId
-        if(!wallID) return ERR_NOT_FOUND
+        if(!wallID){
+            delete this.memory.fillWallId
+            return ERR_NOT_FOUND
+        }
         const wall = Game.getObjectById(wallID)
-        if (!wall) return ERR_NOT_FOUND
+        if (!wall){
+            delete this.memory.fillWallId
+            return ERR_NOT_FOUND
+        }
 
         if (wall.hits < minWallHits) {
             const result = this.repair(wall)
             if (result == ERR_NOT_IN_RANGE) this.goTo(wall.pos)
+            else this.say(`steadyWall ${result}`)
         }
         else delete this.memory.fillWallId
-
         return OK
     }
-
     /**
      * 填充防御性建筑
      * 包括 wall 和 rempart
@@ -218,7 +223,9 @@ export default class CreepExtension extends Creep {
         if (buildResult == OK) {
             // 如果修好的是 rempart 的话就移除墙壁缓存
             // 让维修单位可以快速发现新 rempart
-            if (target.structureType == STRUCTURE_RAMPART) delete this.room.memory.focusWall
+            if (target.structureType == STRUCTURE_RAMPART) {
+                delete this.room.memory.focusWall
+            }
         }
 
         if(buildResult == ERR_NOT_IN_RANGE){
@@ -251,7 +258,8 @@ export default class CreepExtension extends Creep {
 
                     // console.log("22  " + console.log(JSON.stringify(Memory.buildCompleteSite)))
                     // console.log("33  " + this.memory.constructionSiteId)
-                    // console.log("44  " + structure)
+                    console.log("44  " + structure)
+                    console.log("55   " + (structure && (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART)))
                     // 如果刚修好的是墙的话就记住该墙的 id，然后把血量刷高一点）
                     if (structure && (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART)) {
                         this.memory.fillWallId = structure.id as Id<StructureWall | StructureRampart>
