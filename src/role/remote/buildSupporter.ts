@@ -24,7 +24,7 @@ export default class BuildSupporterConfig implements RoleConfig{
 
         // 只要进入房间则准备结束
         if (creep.room.name !== targetRoomName) {
-            creep.goFar(new RoomPosition(25, 25, targetRoomName))
+            creep.goTo(new RoomPosition(25, 25, targetRoomName))
             return false
         }
         else {

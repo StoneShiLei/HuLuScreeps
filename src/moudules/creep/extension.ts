@@ -258,8 +258,8 @@ export default class CreepExtension extends Creep {
 
                     // console.log("22  " + console.log(JSON.stringify(Memory.buildCompleteSite)))
                     // console.log("33  " + this.memory.constructionSiteId)
-                    console.log("44  " + structure)
-                    console.log("55   " + (structure && (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART)))
+                    // console.log("44  " + structure)
+                    // console.log("55   " + (structure && (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART)))
                     // 如果刚修好的是墙的话就记住该墙的 id，然后把血量刷高一点）
                     if (structure && (structure.structureType === STRUCTURE_WALL || structure.structureType === STRUCTURE_RAMPART)) {
                         this.memory.fillWallId = structure.id as Id<StructureWall | StructureRampart>

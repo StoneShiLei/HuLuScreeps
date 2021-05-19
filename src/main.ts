@@ -49,7 +49,6 @@ export const loop = ErrorMapper.wrapLoop(() => {
     //     }
     // }
     // Memory.rooms['W5N1'].workerNum = 4
-    Game.creeps['E1N29 worker0'].memory.constructionSiteId
     //远程控制台监控
     watcher()
 });
