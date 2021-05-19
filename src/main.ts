@@ -7,6 +7,8 @@ import mountMouduleController, { mountRoom } from "moudules/room";
 import mountRoomPosition from "moudules/roomPosition";
 import { ErrorMapper } from "utils/errorMapper";
 import Utils from "utils/utils";
+import {StackAnalysis} from "utils/StackAnalysis"
+var watcher = require('watch-client');
 
 //挂载模块控制器
 mountMouduleController()
@@ -24,6 +26,7 @@ ConstructionController.init()
 
 
 
+// export const loop = ErrorMapper.wrapLoop(StackAnalysis.wrap(() => {
 export const loop = ErrorMapper.wrapLoop(() => {
     //creep生命维持
     CreepNumberListener.run()
@@ -36,4 +39,8 @@ export const loop = ErrorMapper.wrapLoop(() => {
     //保存建筑队列
     ConstructionController.save()
 
+
+    //远程控制台监控
+    watcher()
 });
+// }));

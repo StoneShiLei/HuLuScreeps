@@ -66,6 +66,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "rollup-plugin-copy": "^3.4.0",
     "source-map": "~0.6.1"
   }
 }
