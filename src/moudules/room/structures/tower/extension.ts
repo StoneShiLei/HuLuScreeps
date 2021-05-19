@@ -62,6 +62,9 @@ export default class TowerExtension extends StructureTower {
         if (enemys.length <= 0){
             Utils.log('威胁解除，返回日常模式')
             delete this.room.memory.defenseMode
+            const newWorkerNumber = (this.room.memory.workerNum??0) > 8? -8 : 0
+            this.room.spawnController.release.changeBaseUnit('worker',newWorkerNumber)
+            this.room.workController.updateTask(new FillWallTask(),{dispath:true}) //更新刷墙优先级
             return
         }
 
@@ -74,7 +77,7 @@ export default class TowerExtension extends StructureTower {
             // const newWorkerNumber = this.room.controller.level >= 7 ? 3 : 8
             const newWorkerNumber = 8
             // 提高刷墙任务优先级并孵化额外工作单位
-            this.room.workController.updateTask(new FillWallTask(9))
+            this.room.workController.updateTask(new FillWallTask(10),{dispath:true})
             this.room.spawnController.release.changeBaseUnit('worker', newWorkerNumber)
             // this.log('已启动主动防御')
         }

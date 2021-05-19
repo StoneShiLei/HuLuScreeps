@@ -26,7 +26,9 @@ export default class HarvesterConfig implements RoleConfig{
 
         this.setHarvestMode(creep,source)
         if(!creep.memory.data.harvesterData.harvestMode) throw new Error("设置harvesterMode失败")
-        return this.actionStrategy[creep.memory.data.harvesterData.harvestMode].prepare(creep,source)
+        const result = this.actionStrategy[creep.memory.data.harvesterData.harvestMode].prepare(creep,source)
+        if(result) creep.memory.dontPullMe = true  //设置拒绝对穿
+        return result
     }
     getResource?(creep:Creep):boolean{
         if(!creep.memory.data.harvesterData) return false

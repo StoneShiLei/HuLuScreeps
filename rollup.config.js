@@ -32,6 +32,7 @@ export default {
     copy({
       targets: [
           { src: "./src/utils/watch-client.js", dest: "./dist/" },
+          { src: "./src/utils/superMove.js", dest: "./dist/" },
       ]
   }),
   ]

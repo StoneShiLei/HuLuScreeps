@@ -61,6 +61,9 @@ interface Creep{
     fillDefenseStructure():boolean
 }
 
+interface CreepMemory {
+    dontPullMe?:boolean
+}
 
 interface GoToOpt{
     range:number

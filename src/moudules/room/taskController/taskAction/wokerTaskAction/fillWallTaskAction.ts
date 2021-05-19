@@ -20,8 +20,9 @@ export default class FillWallTaskAction extends BaseWorkerTaskAction<FillWallTas
 
         // 有焦点墙就优先刷
         if (importantWall) {
-            const actionResult = this.creep.repair(this.creep.room._importantWall)
-            if (actionResult == ERR_NOT_IN_RANGE) this.creep.goTo(this.creep.room._importantWall.pos)
+            const actionResult = this.creep.repair(importantWall)
+            // if(this.creep.name === 'E1N29 worker0') console.log(actionResult)
+            if (actionResult == ERR_NOT_IN_RANGE) this.creep.goTo(importantWall.pos)
         }
         // 否则就按原计划维修
         else {

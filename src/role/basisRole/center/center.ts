@@ -12,7 +12,11 @@ import Utils from "utils/utils"
         if(!creep.memory.data.centerData) throw new Error("未找到centerData")
         // 移动到指定位置
         const { x, y} = creep.memory.data.centerData
-        if(creep.pos.isEqualTo(x,y)) return true
+        if(creep.pos.isEqualTo(x,y)){
+            //设置拒绝对穿
+            creep.memory.dontPullMe = true
+            return true
+        }
         else{
             creep.goTo(new RoomPosition(x,y,creep.room.name),{range:0})
             return false
