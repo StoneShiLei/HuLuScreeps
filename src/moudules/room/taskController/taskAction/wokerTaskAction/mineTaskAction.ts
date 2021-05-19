@@ -21,7 +21,7 @@ export default class MineTaskAction extends BaseWorkerTaskAction<MineTask> {
         // 找不到矿或者矿采集完了，添加延迟孵化并结束任务
         if (!mineral || mineral.mineralAmount <= 0) {
             // addSpawnMinerTask(mineral.room.name, mineral.ticksToRegeneration)
-            this.controller.removeTask(this.task.id)
+            // this.controller.removeTask(this.task.id)
         }
 
         const harvestResult = this.creep.harvest(mineral)
