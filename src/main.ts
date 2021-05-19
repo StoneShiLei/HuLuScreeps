@@ -12,22 +12,21 @@ var watcher = require('watch-client');
 
 //挂载模块控制器
 mountMouduleController()
-//挂载room和position
+//挂载room
 mountRoom()
+//挂载position
 mountRoomPosition()
 //挂载creep
 mountCreep()
 //挂载全局命令
 mountGlobal()
-
+//挂载分析器
+StackAnalysis.mount()
 //初始化建筑控制器
 ConstructionController.init()
 
-
-
-
-// export const loop = ErrorMapper.wrapLoop(StackAnalysis.wrap(() => {
-export const loop = ErrorMapper.wrapLoop(() => {
+export const loop = ErrorMapper.wrapLoop(StackAnalysis.wrap(() => {
+// export const loop = ErrorMapper.wrapLoop(() => {
     //creep生命维持
     CreepNumberListener.run()
     //放置建筑队列里的工地
@@ -42,5 +41,5 @@ export const loop = ErrorMapper.wrapLoop(() => {
 
     //远程控制台监控
     watcher()
-});
-// }));
+// });
+}));
